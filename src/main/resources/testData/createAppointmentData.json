@@ -1,0 +1,12 @@
+{
+    "FirstName": "November",
+    "LastName": "_2",
+    "Gender": "Male",
+    "Age": 60,
+    "ContactNumber": "1234561234",
+    "AppointmentDate": "2024-11-12T00:00:00",
+    "AppointmentTime": "11:30:00",
+    "PerformerName": "Dr. pooja Mishra",
+    "AppointmentType": "New",
+    "DepartmentId": 11
+}

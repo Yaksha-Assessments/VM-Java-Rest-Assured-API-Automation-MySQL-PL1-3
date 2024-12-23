@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+  <meta charset='utf-8'>
+  <title>TestNG reports</title>
+
+    <link type="text/css" href="testng-reports1.css" rel="stylesheet" id="ultra" />
+    <link type="text/css" href="testng-reports.css" rel="stylesheet" id="retro" disabled="false"/>
+    <script type="text/javascript" src="jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="testng-reports.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type='text/javascript'>
+      google.load('visualization', '1', {packages:['table']});
+      google.setOnLoadCallback(drawTable);
+      var suiteTableInitFunctions = new Array();
+      var suiteTableData = new Array();
+    </script>
+    <!--
+      <script type="text/javascript" src="jquery-ui/js/jquery-ui-1.8.16.custom.min.js"></script>
+     -->
+  </head>
+
+  <body>    <div class="top-banner-root">
+      <span class="top-banner-title-font">Test results</span>
+      <button id="button" class="button">Switch Retro Theme</button> <!-- button -->
+      <br/>
+      <span class="top-banner-font-1">1 suite</span>
+    </div> <!-- top-banner-root -->
+    <div class="navigator-root">
+      <div class="navigator-suite-header">
+        <span>All suites</span>
+        <a href="#" title="Collapse/expand all the suites" class="collapse-all-link">
+          <img src="collapseall.gif" class="collapse-all-icon">
+          </img> <!-- collapse-all-icon -->
+        </a> <!-- collapse-all-link -->
+      </div> <!-- navigator-suite-header -->
+      <div class="suite">
+        <div class="rounded-window">
+          <div class="suite-header light-rounded-window-top">
+            <a href="#" panel-name="suite-Suite" class="navigator-link">
+              <span class="suite-name border-passed">Suite</span>
+            </a> <!-- navigator-link -->
+          </div> <!-- suite-header light-rounded-window-top -->
+          <div class="navigator-suite-content">
+            <div class="suite-section-title">
+              <span>Info</span>
+            </div> <!-- suite-section-title -->
+            <div class="suite-section-content">
+              <ul>
+                <li>
+                  <a href="#" panel-name="test-xml-Suite" class="navigator-link ">
+                    <span>C:\Data\My Documents\Bughunters 07 Nov\PL1\Rest Assured\Additional PL1 3 Updated 18 Dec\Backup\VM-Java-Rest-Assured-API-Automation-MySQL-PL1-3-Solution-main\testng.xml</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="testlist-Suite" class="navigator-link ">
+                    <span class="test-stats">1 test</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="group-Suite" class="navigator-link ">
+                    <span>1 group</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="times-Suite" class="navigator-link ">
+                    <span>Times</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="reporter-Suite" class="navigator-link ">
+                    <span>Reporter output</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="ignored-methods-Suite" class="navigator-link ">
+                    <span>Ignored methods</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="chronological-Suite" class="navigator-link ">
+                    <span>Chronological view</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+              </ul>
+            </div> <!-- suite-section-content -->
+            <div class="result-section">
+              <div class="suite-section-title">
+                <span>Results</span>
+              </div> <!-- suite-section-title -->
+              <div class="suite-section-content">
+                <ul>
+                  <li>
+                    <span class="method-stats">18 methods,   18 passed</span>
+                  </li>
+                  <li>
+                    <span class="method-list-title passed">Passed methods</span>
+                    <span class="show-or-hide-methods passed">
+                      <a href="#" panel-name="suite-Suite" class="hide-methods passed suite-Suite"> (hide)</a> <!-- hide-methods passed suite-Suite -->
+                      <a href="#" panel-name="suite-Suite" class="show-methods passed suite-Suite"> (show)</a> <!-- show-methods passed suite-Suite -->
+                    </span>
+                    <div class="method-list-content passed suite-Suite">
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="activSupp">activSupp</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="activateInventory">activateInventory</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="availableItems">availableItems</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="getAllDepartmentsTest">getAllDepartmentsTest</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="getAllItemsTest">getAllItemsTest</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="getHospitalIncomeIncReport">getHospitalIncomeIncReport</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="getIncenEmpBillItems">getIncenEmpBillItems</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="getIncentiveReffSummary">getIncentiveReffSummary</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="getIncentiveSummary">getIncentiveSummary</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="getInventoryFiscalYears">getInventoryFiscalYears</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="inventoryItemByStoreId">inventoryItemByStoreId</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="inventorySubCategory">inventorySubCategory</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="measureUnits">measureUnits</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="mostSoldMedicine">mostSoldMedicine</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="requisitionItems">requisitionItems</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="salesCat">salesCat</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="substoreWiseDisp">substoreWiseDisp</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="testcases.RestAssured_TestCases_PL1" class="method navigator-link" hash-for-method="verifyRequisitionAndDispatchFields">verifyRequisitionAndDispatchFields</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                    </div> <!-- method-list-content passed suite-Suite -->
+                  </li>
+                </ul>
+              </div> <!-- suite-section-content -->
+            </div> <!-- result-section -->
+          </div> <!-- navigator-suite-content -->
+        </div> <!-- rounded-window -->
+      </div> <!-- suite -->
+    </div> <!-- navigator-root -->
+    <div class="wrapper">
+      <div class="main-panel-root">
+        <div panel-name="suite-Suite" class="panel Suite">
+          <div class="suite-Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">testcases.RestAssured_TestCases_PL1</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="activSupp">
+                  </a> <!-- activSupp -->
+                  <span class="method-name">activSupp</span>
+                  <em>
+(1. Send a GET request to get active suppliers.
+2. Validate that the SupplierId and SupplierName are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="activateInventory">
+                  </a> <!-- activateInventory -->
+                  <span class="method-name">activateInventory</span>
+                  <em>
+(1. Send a GET request to Activate Inventory/
+2. Validate that the StoreId, Name, and StoreDescription are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="availableItems">
+                  </a> <!-- availableItems -->
+                  <span class="method-name">availableItems</span>
+                  <em>
+(1. Send a GET request to available Items by Store Id
+2. Validate that the ItemId, AvailableQuantity and StoreId are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="getAllDepartmentsTest">
+                  </a> <!-- getAllDepartmentsTest -->
+                  <span class="method-name">getAllDepartmentsTest</span>
+                  <em>
+(1. Send a GET request to Get All Departments
+2. Validate that all the DepartmentId and DepartmentName are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="getAllItemsTest">
+                  </a> <!-- getAllItemsTest -->
+                  <span class="method-name">getAllItemsTest</span>
+                  <em>
+(1. Send a GET request to Get All Items
+2. Validate that the Item Id and Item name are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="getHospitalIncomeIncReport">
+                  </a> <!-- getHospitalIncomeIncReport -->
+                  <span class="method-name">getHospitalIncomeIncReport</span>
+                  <em>
+(1. Send a GET request to Hospital Income Incentive Report
+2. Validate that the ServiceDepartmentName, ServiceDepartmentId, NetSales, ReferralCommission, GrossIncome, OtherIncentive, and HospitalNetIncome are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="getIncenEmpBillItems">
+                  </a> <!-- getIncenEmpBillItems -->
+                  <span class="method-name">getIncenEmpBillItems</span>
+                  <em>
+(1. Send a GET request to Incentive Employee Bill Items
+2. Validate that the EmployeeIncentiveInfoId, EmployeeId, FullName, TDSPercent, EmpTDSPercent, IsActive are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="getIncentiveReffSummary">
+                  </a> <!-- getIncentiveReffSummary -->
+                  <span class="method-name">getIncentiveReffSummary</span>
+                  <em>
+(1. Send a GET request to Incentive Referral Summary Report
+2. Validate that the Prescriber name, PrescriberId, DocTotalAmount, TDSAmount and NetPayableAmount are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="getIncentiveSummary">
+                  </a> <!-- getIncentiveSummary -->
+                  <span class="method-name">getIncentiveSummary</span>
+                  <em>
+(1. Send a GET request to Incentive Summary Report
+2. Validate that the Prescriber Id and Prescriber name are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="getInventoryFiscalYears">
+                  </a> <!-- getInventoryFiscalYears -->
+                  <span class="method-name">getInventoryFiscalYears</span>
+                  <em>
+(1. Send a GET request to Inventory Fiscal Years
+2. Validate that the FiscalYearId, FiscalYearName are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="inventoryItemByStoreId">
+                  </a> <!-- inventoryItemByStoreId -->
+                  <span class="method-name">inventoryItemByStoreId</span>
+                  <em>
+(1. Send a GET request to get inventory items by store Id.
+2. Validate that the ItemId, ItemName, and AvailableQuantity are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="inventorySubCategory">
+                  </a> <!-- inventorySubCategory -->
+                  <span class="method-name">inventorySubCategory</span>
+                  <em>
+(1. Send a GET request to Inventory Subcategory
+2. Validate that the SubCategoryName and SubCategoryId are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="measureUnits">
+                  </a> <!-- measureUnits -->
+                  <span class="method-name">measureUnits</span>
+                  <em>
+(1. Send a GET request to get unit of measurements.
+2. Validate that the UOMId and UOMName are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="mostSoldMedicine">
+                  </a> <!-- mostSoldMedicine -->
+                  <span class="method-name">mostSoldMedicine</span>
+                  <em>
+(1. Send a GET request to get most sold medicine within date range.
+2. Validate that the ItemName and SoldQuantity are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="requisitionItems">
+                  </a> <!-- requisitionItems -->
+                  <span class="method-name">requisitionItems</span>
+                  <em>
+(1. Send a GET request to get Inventory Requisition Items For View by requisition Id.
+2. Validate that the RequisitionNo, CreatedByName are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="salesCat">
+                  </a> <!-- salesCat -->
+                  <span class="method-name">salesCat</span>
+                  <em>
+(1. Send a GET request to get sales categories from pharmacy.
+2. Validate that the Name and SalesCategoryId are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="substoreWiseDisp">
+                  </a> <!-- substoreWiseDisp -->
+                  <span class="method-name">substoreWiseDisp</span>
+                  <em>
+(1. Send a GET request to get substore wise dispatch value.
+2. Validate that the Name and TotalDispatchValue are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="verifyRequisitionAndDispatchFields">
+                  </a> <!-- verifyRequisitionAndDispatchFields -->
+                  <span class="method-name">verifyRequisitionAndDispatchFields</span>
+                  <em>
+(1. Send a GET request to track by requisition Id.
+2. Validate that the RequisitionId, CreatedBy and Dispatchers are not null.
+3. Verify the response status code is 200.)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Suite-class-passed -->
+        </div> <!-- panel Suite -->
+        <div panel-name="test-xml-Suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">C:\Data\My Documents\Bughunters 07 Nov\PL1\Rest Assured\Additional PL1 3 Updated 18 Dec\Backup\VM-Java-Rest-Assured-API-Automation-MySQL-PL1-3-Solution-main\testng.xml</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <pre>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE suite SYSTEM &quot;https://testng.org/testng-1.0.dtd&quot;&gt;
+&lt;suite parallel=&quot;classes&quot; name=&quot;Suite&quot; guice-stage=&quot;DEVELOPMENT&quot;&gt;
+  &lt;groups&gt;
+    &lt;run&gt;
+      &lt;include name=&quot;PL1&quot;/&gt;
+    &lt;/run&gt;
+  &lt;/groups&gt;
+  &lt;groups&gt;
+    &lt;run&gt;
+      &lt;include name=&quot;PL1&quot;/&gt;
+    &lt;/run&gt;
+  &lt;/groups&gt;
+  &lt;listeners&gt;
+    &lt;listener class-name=&quot;coreUtilities.testlisteners.TestListener&quot;/&gt;
+    &lt;listener class-name=&quot;coreUtilities.testlisteners.RetryListener&quot;/&gt;
+  &lt;/listeners&gt;
+  &lt;test thread-count=&quot;5&quot; parallel=&quot;classes&quot; name=&quot;Test&quot;&gt;
+    &lt;parameter name=&quot;environment&quot; value=&quot;dev&quot;/&gt;
+    &lt;parameter name=&quot;browser&quot; value=&quot;chrome&quot;/&gt;
+    &lt;classes&gt;
+      &lt;class name=&quot;testcases.RestAssured_TestCases_PL1&quot;/&gt;
+    &lt;/classes&gt;
+  &lt;/test&gt; &lt;!-- Test --&gt;
+&lt;/suite&gt; &lt;!-- Suite --&gt;
+            </pre>
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="testlist-Suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Tests for Suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <ul>
+              <li>
+                <span class="test-name">Test (1 class)</span>
+              </li>
+            </ul>
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="group-Suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Groups for Suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <div class="test-group">
+              <span class="test-group-name">PL1</span>
+              <br/>
+              <div class="method-in-group">
+                <span class="method-in-group-name">activSupp</span>
+                <br/>
+              </div> <!-- method-in-group -->
+              <div class="method-in-group">
+                <span class="method-in-group-name">activateInventory</span>
+                <br/>
+              </div> <!-- method-in-group -->
+              <div class="method-in-group">
+                <span class="method-in-group-name">availableItems</span>
+                <br/>
+              </div> <!-- method-in-group -->
+              <div class="method-in-group">
+                <span class="method-in-group-name">getAllDepartmentsTest</span>
+                <br/>
+              </div> <!-- method-in-group -->
+              <div class="method-in-group">
+                <span class="method-in-group-name">getAllItemsTest</span>
+                <br/>
+              </div> <!-- method-in-group -->
+              <div class="method-in-group">
+                <span class="method-in-group-name">getHospitalIncomeIncReport</span>
+                <br/>
+              </div> <!-- method-in-group -->
+              <div class="method-in-group">
+                <span class="method-in-group-name">getIncenEmpBillItems</span>
+                <br/>
+              </div> <!-- method-in-group -->
+              <div class="method-in-group">
+                <span class="method-in-group-name">getIncentiveReffSummary</span>
+                <br/>
+              </div> <!-- method-in-group -->
+              <div class="method-in-group">
+                <span class="method-in-group-name">getIncentiveSummary</span>
+                <br/>
+              </div> <!-- method-in-group -->
+              <div class="method-in-group">
+                <span class="method-in-group-name">getInventoryFiscalYears</span>
+                <br/>
+              </div> <!-- method-in-group -->
+              <div class="method-in-group">
+                <span class="method-in-group-name">inventoryItemByStoreId</span>
+                <br/>
+              </div> <!-- method-in-group -->
+              <div class="method-in-group">
+                <span class="method-in-group-name">inventorySubCategory</span>
+                <br/>
+              </div> <!-- method-in-group -->
+              <div class="method-in-group">
+                <span class="method-in-group-name">measureUnits</span>
+                <br/>
+              </div> <!-- method-in-group -->
+              <div class="method-in-group">
+                <span class="method-in-group-name">mostSoldMedicine</span>
+                <br/>
+              </div> <!-- method-in-group -->
+              <div class="method-in-group">
+                <span class="method-in-group-name">requisitionItems</span>
+                <br/>
+              </div> <!-- method-in-group -->
+              <div class="method-in-group">
+                <span class="method-in-group-name">salesCat</span>
+                <br/>
+              </div> <!-- method-in-group -->
+              <div class="method-in-group">
+                <span class="method-in-group-name">substoreWiseDisp</span>
+                <br/>
+              </div> <!-- method-in-group -->
+              <div class="method-in-group">
+                <span class="method-in-group-name">verifyRequisitionAndDispatchFields</span>
+                <br/>
+              </div> <!-- method-in-group -->
+            </div> <!-- test-group -->
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="times-Suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Times for Suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <div class="times-div">
+              <script type="text/javascript">
+suiteTableInitFunctions.push('tableData_Suite');
+function tableData_Suite() {
+var data = new google.visualization.DataTable();
+data.addColumn('number', 'Number');
+data.addColumn('string', 'Method');
+data.addColumn('string', 'Class');
+data.addColumn('number', 'Time (ms)');
+data.addRows(18);
+data.setCell(0, 0, 0)
+data.setCell(0, 1, 'getAllDepartmentsTest')
+data.setCell(0, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(0, 3, 18407);
+data.setCell(1, 0, 1)
+data.setCell(1, 1, 'measureUnits')
+data.setCell(1, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(1, 3, 12494);
+data.setCell(2, 0, 2)
+data.setCell(2, 1, 'getIncentiveSummary')
+data.setCell(2, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(2, 3, 6725);
+data.setCell(3, 0, 3)
+data.setCell(3, 1, 'getInventoryFiscalYears')
+data.setCell(3, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(3, 3, 6088);
+data.setCell(4, 0, 4)
+data.setCell(4, 1, 'activSupp')
+data.setCell(4, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(4, 3, 3198);
+data.setCell(5, 0, 5)
+data.setCell(5, 1, 'requisitionItems')
+data.setCell(5, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(5, 3, 1960);
+data.setCell(6, 0, 6)
+data.setCell(6, 1, 'getAllItemsTest')
+data.setCell(6, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(6, 3, 1163);
+data.setCell(7, 0, 7)
+data.setCell(7, 1, 'getHospitalIncomeIncReport')
+data.setCell(7, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(7, 3, 1060);
+data.setCell(8, 0, 8)
+data.setCell(8, 1, 'getIncenEmpBillItems')
+data.setCell(8, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(8, 3, 1050);
+data.setCell(9, 0, 9)
+data.setCell(9, 1, 'getIncentiveReffSummary')
+data.setCell(9, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(9, 3, 1018);
+data.setCell(10, 0, 10)
+data.setCell(10, 1, 'activateInventory')
+data.setCell(10, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(10, 3, 1004);
+data.setCell(11, 0, 11)
+data.setCell(11, 1, 'mostSoldMedicine')
+data.setCell(11, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(11, 3, 982);
+data.setCell(12, 0, 12)
+data.setCell(12, 1, 'inventorySubCategory')
+data.setCell(12, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(12, 3, 967);
+data.setCell(13, 0, 13)
+data.setCell(13, 1, 'substoreWiseDisp')
+data.setCell(13, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(13, 3, 852);
+data.setCell(14, 0, 14)
+data.setCell(14, 1, 'salesCat')
+data.setCell(14, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(14, 3, 810);
+data.setCell(15, 0, 15)
+data.setCell(15, 1, 'availableItems')
+data.setCell(15, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(15, 3, 774);
+data.setCell(16, 0, 16)
+data.setCell(16, 1, 'verifyRequisitionAndDispatchFields')
+data.setCell(16, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(16, 3, 702);
+data.setCell(17, 0, 17)
+data.setCell(17, 1, 'inventoryItemByStoreId')
+data.setCell(17, 2, 'testcases.RestAssured_TestCases_PL1')
+data.setCell(17, 3, 683);
+window.suiteTableData['Suite']= { tableData: data, tableDiv: 'times-div-Suite'}
+return data;
+}
+              </script>
+              <span class="suite-total-time">Total running time: 59 seconds</span>
+              <div id="times-div-Suite">
+              </div> <!-- times-div-Suite -->
+            </div> <!-- times-div -->
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="reporter-Suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Reporter output for Suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="ignored-methods-Suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">0 ignored methods</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="chronological-Suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Methods in chronological order</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <div class="chronological-class">
+              <div class="chronological-class-name">testcases.RestAssured_TestCases_PL1</div> <!-- chronological-class-name -->
+              <div class="test-method">
+                <span class="method-name">getAllDepartmentsTest</span>
+                <span class="method-start">0 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">getAllItemsTest</span>
+                <span class="method-start">24094 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">getIncentiveSummary</span>
+                <span class="method-start">28411 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">getIncentiveReffSummary</span>
+                <span class="method-start">39031 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">getHospitalIncomeIncReport</span>
+                <span class="method-start">43215 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">getIncenEmpBillItems</span>
+                <span class="method-start">47375 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">getInventoryFiscalYears</span>
+                <span class="method-start">51507 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">activateInventory</span>
+                <span class="method-start">61587 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">inventorySubCategory</span>
+                <span class="method-start">65717 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">availableItems</span>
+                <span class="method-start">69802 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">requisitionItems</span>
+                <span class="method-start">73686 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">verifyRequisitionAndDispatchFields</span>
+                <span class="method-start">78765 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">inventoryItemByStoreId</span>
+                <span class="method-start">82595 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">mostSoldMedicine</span>
+                <span class="method-start">86455 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">substoreWiseDisp</span>
+                <span class="method-start">90567 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">activSupp</span>
+                <span class="method-start">94562 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">measureUnits</span>
+                <span class="method-start">100933 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">salesCat</span>
+                <span class="method-start">118636 ms</span>
+              </div> <!-- test-method -->
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+      </div> <!-- main-panel-root -->
+    </div> <!-- wrapper -->
+  </body>
+<script type="text/javascript" src="testng-reports2.js"></script>
+</html>
