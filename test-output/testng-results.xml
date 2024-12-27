@@ -2,136 +2,136 @@
 <testng-results ignored="0" total="18" passed="18" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2024-12-18T18:43:35 IST" name="Suite" finished-at="2024-12-18T18:45:39 IST" duration-ms="123562">
+  <suite started-at="2024-12-27T16:21:34 IST" name="Suite" finished-at="2024-12-27T16:22:58 IST" duration-ms="84292">
     <groups>
       <group name="PL1">
-        <method signature="RestAssured_TestCases_PL1.getAllDepartmentsTest()[pri:1, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="getAllDepartmentsTest" class="testcases.RestAssured_TestCases_PL1"/>
-        <method signature="RestAssured_TestCases_PL1.getAllItemsTest()[pri:2, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="getAllItemsTest" class="testcases.RestAssured_TestCases_PL1"/>
-        <method signature="RestAssured_TestCases_PL1.getIncentiveSummary()[pri:3, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="getIncentiveSummary" class="testcases.RestAssured_TestCases_PL1"/>
-        <method signature="RestAssured_TestCases_PL1.getIncentiveReffSummary()[pri:4, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="getIncentiveReffSummary" class="testcases.RestAssured_TestCases_PL1"/>
-        <method signature="RestAssured_TestCases_PL1.getHospitalIncomeIncReport()[pri:5, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="getHospitalIncomeIncReport" class="testcases.RestAssured_TestCases_PL1"/>
-        <method signature="RestAssured_TestCases_PL1.getIncenEmpBillItems()[pri:6, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="getIncenEmpBillItems" class="testcases.RestAssured_TestCases_PL1"/>
-        <method signature="RestAssured_TestCases_PL1.getInventoryFiscalYears()[pri:7, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="getInventoryFiscalYears" class="testcases.RestAssured_TestCases_PL1"/>
-        <method signature="RestAssured_TestCases_PL1.activateInventory()[pri:8, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="activateInventory" class="testcases.RestAssured_TestCases_PL1"/>
-        <method signature="RestAssured_TestCases_PL1.inventorySubCategory()[pri:9, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="inventorySubCategory" class="testcases.RestAssured_TestCases_PL1"/>
-        <method signature="RestAssured_TestCases_PL1.availableItems()[pri:10, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="availableItems" class="testcases.RestAssured_TestCases_PL1"/>
-        <method signature="RestAssured_TestCases_PL1.requisitionItems()[pri:11, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="requisitionItems" class="testcases.RestAssured_TestCases_PL1"/>
-        <method signature="RestAssured_TestCases_PL1.verifyRequisitionAndDispatchFields()[pri:12, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="verifyRequisitionAndDispatchFields" class="testcases.RestAssured_TestCases_PL1"/>
-        <method signature="RestAssured_TestCases_PL1.inventoryItemByStoreId()[pri:13, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="inventoryItemByStoreId" class="testcases.RestAssured_TestCases_PL1"/>
-        <method signature="RestAssured_TestCases_PL1.mostSoldMedicine()[pri:14, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="mostSoldMedicine" class="testcases.RestAssured_TestCases_PL1"/>
-        <method signature="RestAssured_TestCases_PL1.substoreWiseDisp()[pri:15, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="substoreWiseDisp" class="testcases.RestAssured_TestCases_PL1"/>
-        <method signature="RestAssured_TestCases_PL1.activSupp()[pri:16, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="activSupp" class="testcases.RestAssured_TestCases_PL1"/>
-        <method signature="RestAssured_TestCases_PL1.measureUnits()[pri:17, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="measureUnits" class="testcases.RestAssured_TestCases_PL1"/>
-        <method signature="RestAssured_TestCases_PL1.salesCat()[pri:18, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" name="salesCat" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.getAllDepartmentsTest()[pri:1, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="getAllDepartmentsTest" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.getAllItemsTest()[pri:2, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="getAllItemsTest" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.getIncentiveSummary()[pri:3, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="getIncentiveSummary" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.getIncentiveReffSummary()[pri:4, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="getIncentiveReffSummary" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.getHospitalIncomeIncReport()[pri:5, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="getHospitalIncomeIncReport" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.getIncenEmpBillItems()[pri:6, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="getIncenEmpBillItems" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.getInventoryFiscalYears()[pri:7, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="getInventoryFiscalYears" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.activateInventory()[pri:8, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="activateInventory" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.inventorySubCategory()[pri:9, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="inventorySubCategory" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.availableItems()[pri:10, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="availableItems" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.requisitionItems()[pri:11, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="requisitionItems" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.verifyRequisitionAndDispatchFields()[pri:12, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="verifyRequisitionAndDispatchFields" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.inventoryItemByStoreId()[pri:13, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="inventoryItemByStoreId" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.mostSoldMedicine()[pri:14, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="mostSoldMedicine" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.substoreWiseDisp()[pri:15, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="substoreWiseDisp" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.activSupp()[pri:16, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="activSupp" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.measureUnits()[pri:17, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="measureUnits" class="testcases.RestAssured_TestCases_PL1"/>
+        <method signature="RestAssured_TestCases_PL1.salesCat()[pri:18, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" name="salesCat" class="testcases.RestAssured_TestCases_PL1"/>
       </group> <!-- PL1 -->
     </groups>
-    <test started-at="2024-12-18T18:43:35 IST" name="Test" finished-at="2024-12-18T18:45:39 IST" duration-ms="123562">
+    <test started-at="2024-12-27T16:21:34 IST" name="Test" finished-at="2024-12-27T16:22:58 IST" duration-ms="84292">
       <class name="testcases.RestAssured_TestCases_PL1">
-        <test-method signature="getAllDepartmentsTest()[pri:1, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:43:36 IST" name="getAllDepartmentsTest" description="1. Send a GET request to Get All Departments
+        <test-method signature="getAllDepartmentsTest()[pri:1, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:21:34 IST" name="getAllDepartmentsTest" description="1. Send a GET request to Get All Departments
 2. Validate that all the DepartmentId and DepartmentName are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:43:55 IST" duration-ms="18407" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:21:42 IST" duration-ms="8007" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- getAllDepartmentsTest -->
-        <test-method signature="getAllItemsTest()[pri:2, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:44:00 IST" name="getAllItemsTest" description="1. Send a GET request to Get All Items
+        <test-method signature="getAllItemsTest()[pri:2, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:21:47 IST" name="getAllItemsTest" description="1. Send a GET request to Get All Items
 2. Validate that the Item Id and Item name are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:44:01 IST" duration-ms="1163" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:21:48 IST" duration-ms="1164" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- getAllItemsTest -->
-        <test-method signature="getIncentiveSummary()[pri:3, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:44:05 IST" name="getIncentiveSummary" description="1. Send a GET request to Incentive Summary Report
+        <test-method signature="getIncentiveSummary()[pri:3, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:21:51 IST" name="getIncentiveSummary" description="1. Send a GET request to Incentive Summary Report
 2. Validate that the Prescriber Id and Prescriber name are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:44:11 IST" duration-ms="6725" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:21:56 IST" duration-ms="4903" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- getIncentiveSummary -->
-        <test-method signature="getIncentiveReffSummary()[pri:4, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:44:15 IST" name="getIncentiveReffSummary" description="1. Send a GET request to Incentive Referral Summary Report
+        <test-method signature="getIncentiveReffSummary()[pri:4, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:21:59 IST" name="getIncentiveReffSummary" description="1. Send a GET request to Incentive Referral Summary Report
 2. Validate that the Prescriber name, PrescriberId, DocTotalAmount, TDSAmount and NetPayableAmount are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:44:16 IST" duration-ms="1018" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:22:00 IST" duration-ms="922" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- getIncentiveReffSummary -->
-        <test-method signature="getHospitalIncomeIncReport()[pri:5, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:44:19 IST" name="getHospitalIncomeIncReport" description="1. Send a GET request to Hospital Income Incentive Report
+        <test-method signature="getHospitalIncomeIncReport()[pri:5, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:22:03 IST" name="getHospitalIncomeIncReport" description="1. Send a GET request to Hospital Income Incentive Report
 2. Validate that the ServiceDepartmentName, ServiceDepartmentId, NetSales, ReferralCommission, GrossIncome, OtherIncentive, and HospitalNetIncome are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:44:20 IST" duration-ms="1060" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:22:04 IST" duration-ms="810" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- getHospitalIncomeIncReport -->
-        <test-method signature="getIncenEmpBillItems()[pri:6, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:44:24 IST" name="getIncenEmpBillItems" description="1. Send a GET request to Incentive Employee Bill Items
+        <test-method signature="getIncenEmpBillItems()[pri:6, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:22:07 IST" name="getIncenEmpBillItems" description="1. Send a GET request to Incentive Employee Bill Items
 2. Validate that the EmployeeIncentiveInfoId, EmployeeId, FullName, TDSPercent, EmpTDSPercent, IsActive are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:44:25 IST" duration-ms="1050" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:22:07 IST" duration-ms="638" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- getIncenEmpBillItems -->
-        <test-method signature="getInventoryFiscalYears()[pri:7, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:44:28 IST" name="getInventoryFiscalYears" description="1. Send a GET request to Inventory Fiscal Years
+        <test-method signature="getInventoryFiscalYears()[pri:7, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:22:10 IST" name="getInventoryFiscalYears" description="1. Send a GET request to Inventory Fiscal Years
 2. Validate that the FiscalYearId, FiscalYearName are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:44:34 IST" duration-ms="6088" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:22:13 IST" duration-ms="2258" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- getInventoryFiscalYears -->
-        <test-method signature="activateInventory()[pri:8, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:44:38 IST" name="activateInventory" description="1. Send a GET request to Activate Inventory/
+        <test-method signature="activateInventory()[pri:8, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:22:16 IST" name="activateInventory" description="1. Send a GET request to Activate Inventory
 2. Validate that the StoreId, Name, and StoreDescription are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:44:39 IST" duration-ms="1004" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:22:16 IST" duration-ms="531" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- activateInventory -->
-        <test-method signature="inventorySubCategory()[pri:9, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:44:42 IST" name="inventorySubCategory" description="1. Send a GET request to Inventory Subcategory
+        <test-method signature="inventorySubCategory()[pri:9, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:22:19 IST" name="inventorySubCategory" description="1. Send a GET request to Inventory Subcategory
 2. Validate that the SubCategoryName and SubCategoryId are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:44:43 IST" duration-ms="967" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:22:20 IST" duration-ms="674" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- inventorySubCategory -->
-        <test-method signature="availableItems()[pri:10, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:44:46 IST" name="availableItems" description="1. Send a GET request to available Items by Store Id
+        <test-method signature="availableItems()[pri:10, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:22:23 IST" name="availableItems" description="1. Send a GET request to available Items by Store Id
 2. Validate that the ItemId, AvailableQuantity and StoreId are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:44:47 IST" duration-ms="774" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:22:24 IST" duration-ms="724" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- availableItems -->
-        <test-method signature="requisitionItems()[pri:11, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:44:50 IST" name="requisitionItems" description="1. Send a GET request to get Inventory Requisition Items For View by requisition Id.
+        <test-method signature="requisitionItems()[pri:11, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:22:27 IST" name="requisitionItems" description="1. Send a GET request to get Inventory Requisition Items For View by requisition Id.
 2. Validate that the RequisitionNo, CreatedByName are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:44:52 IST" duration-ms="1960" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:22:27 IST" duration-ms="631" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- requisitionItems -->
-        <test-method signature="verifyRequisitionAndDispatchFields()[pri:12, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:44:55 IST" name="verifyRequisitionAndDispatchFields" description="1. Send a GET request to track by requisition Id.
+        <test-method signature="verifyRequisitionAndDispatchFields()[pri:12, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:22:31 IST" name="verifyRequisitionAndDispatchFields" description="1. Send a GET request to track by requisition Id.
 2. Validate that the RequisitionId, CreatedBy and Dispatchers are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:44:56 IST" duration-ms="702" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:22:31 IST" duration-ms="857" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- verifyRequisitionAndDispatchFields -->
-        <test-method signature="inventoryItemByStoreId()[pri:13, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:44:59 IST" name="inventoryItemByStoreId" description="1. Send a GET request to get inventory items by store Id.
+        <test-method signature="inventoryItemByStoreId()[pri:13, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:22:35 IST" name="inventoryItemByStoreId" description="1. Send a GET request to get inventory items by store Id.
 2. Validate that the ItemId, ItemName, and AvailableQuantity are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:44:59 IST" duration-ms="683" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:22:35 IST" duration-ms="523" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- inventoryItemByStoreId -->
-        <test-method signature="mostSoldMedicine()[pri:14, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:45:03 IST" name="mostSoldMedicine" description="1. Send a GET request to get most sold medicine within date range.
+        <test-method signature="mostSoldMedicine()[pri:14, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:22:38 IST" name="mostSoldMedicine" description="1. Send a GET request to get most sold medicine within date range.
 2. Validate that the ItemName and SoldQuantity are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:45:04 IST" duration-ms="982" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:22:39 IST" duration-ms="934" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- mostSoldMedicine -->
-        <test-method signature="substoreWiseDisp()[pri:15, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:45:07 IST" name="substoreWiseDisp" description="1. Send a GET request to get substore wise dispatch value.
+        <test-method signature="substoreWiseDisp()[pri:15, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:22:42 IST" name="substoreWiseDisp" description="1. Send a GET request to get substore wise dispatch value.
 2. Validate that the Name and TotalDispatchValue are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:45:08 IST" duration-ms="852" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:22:43 IST" duration-ms="1134" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- substoreWiseDisp -->
-        <test-method signature="activSupp()[pri:16, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:45:11 IST" name="activSupp" description="1. Send a GET request to get active suppliers.
+        <test-method signature="activSupp()[pri:16, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:22:46 IST" name="activSupp" description="1. Send a GET request to get active suppliers.
 2. Validate that the SupplierId and SupplierName are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:45:14 IST" duration-ms="3198" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:22:47 IST" duration-ms="618" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- activSupp -->
-        <test-method signature="measureUnits()[pri:17, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:45:17 IST" name="measureUnits" description="1. Send a GET request to get unit of measurements.
+        <test-method signature="measureUnits()[pri:17, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:22:50 IST" name="measureUnits" description="1. Send a GET request to get unit of measurements.
 2. Validate that the UOMId and UOMName are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:45:30 IST" duration-ms="12494" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:22:51 IST" duration-ms="1299" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- measureUnits -->
-        <test-method signature="salesCat()[pri:18, instance:testcases.RestAssured_TestCases_PL1@65fe9e33]" started-at="2024-12-18T18:45:35 IST" name="salesCat" description="1. Send a GET request to get sales categories from pharmacy.
+        <test-method signature="salesCat()[pri:18, instance:testcases.RestAssured_TestCases_PL1@1d2bd371]" started-at="2024-12-27T16:22:54 IST" name="salesCat" description="1. Send a GET request to get sales categories from pharmacy.
 2. Validate that the Name and SalesCategoryId are not null.
-3. Verify the response status code is 200." finished-at="2024-12-18T18:45:36 IST" duration-ms="810" status="PASS">
+3. Verify the response status code is 200." finished-at="2024-12-27T16:22:55 IST" duration-ms="675" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- salesCat -->

@@ -1,9 +1,13 @@
 package rest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.restassured.RestAssured;
@@ -32,15 +36,22 @@ public class ApiUtil {
 			request.body(body);
 		}
 
+		// Send GET request and extract response
 		Response response = request.get(BASE_URL + endpoint).then().extract().response();
 
 		// Extracting required data
 		int statusCode = response.statusCode();
 		String status = response.jsonPath().getString("Status");
-		List<Map<String, Object>> results = response.jsonPath().getList("Results");
 
-		// Return a CustomResponse object
-		return new CustomResponse(response, statusCode, status, results);
+		// Extracting DepartmentId and DepartmentName
+		List<Map<String, Object>> results = response.jsonPath().getList("Results");
+		List<Object> departmentIds = results.stream().map(department -> department.get("DepartmentId"))
+				.collect(Collectors.toList());
+		List<Object> departmentNames = results.stream().map(department -> department.get("DepartmentName"))
+				.collect(Collectors.toList());
+
+		// Return custom response with extracted fields
+		return new CustomResponse(response, statusCode, status, departmentIds, departmentNames);
 	}
 
 	/**
@@ -61,15 +72,20 @@ public class ApiUtil {
 			request.body(body);
 		}
 
+		// Send GET request and extract response
 		Response response = request.get(BASE_URL + endpoint).then().extract().response();
 
 		// Extracting required data
 		int statusCode = response.statusCode();
 		String status = response.jsonPath().getString("Status");
-		List<Map<String, Object>> results = response.jsonPath().getList("Results");
 
-		// Return a CustomResponse object
-		return new CustomResponse(response, statusCode, status, results);
+		// Extracting ItemId and ItemName
+		List<Map<String, Object>> results = response.jsonPath().getList("Results");
+		List<Object> itemIds = results.stream().map(item -> item.get("ItemId")).collect(Collectors.toList());
+		List<Object> itemNames = results.stream().map(item -> item.get("ItemName")).collect(Collectors.toList());
+
+		// Return custom response with extracted fields
+		return new CustomResponse(response, statusCode, status, itemIds, itemNames);
 	}
 
 	/**
@@ -81,8 +97,11 @@ public class ApiUtil {
 	 *         message, and a list of incentive summary details in the "JsonData"
 	 *         field, containing details such as PrescriberName, PrescriberId,
 	 *         DocTotalAmount, TDSAmount, and NetPayableAmount.
+	 * @throws JsonProcessingException
+	 * @throws JsonMappingException
 	 */
-	public CustomResponse getIncentiveSummaryReport(String URL, Object body) {
+	public CustomResponse getIncentiveSummaryReport(String URL, Object body)
+			throws JsonMappingException, JsonProcessingException {
 		RequestSpecification request = RestAssured.given().header("Authorization", AuthUtil.getAuthHeader())
 				.header("Content-Type", "application/json");
 
@@ -98,10 +117,30 @@ public class ApiUtil {
 		int statusCode = response.statusCode();
 		System.out.println(response.prettyPrint());
 		String status = response.jsonPath().getString("Status");
-		List<Map<String, Object>> results = response.jsonPath().getList("JsonData");
 
-		// Return a CustomResponse object
-		return new CustomResponse(response, statusCode, status, results);
+		// Extracting JsonData as a string
+		String jsonDataString = response.jsonPath().getString("Results.JsonData");
+
+		// Deserialize the stringified JSON into a List of Maps
+		List<Map<String, Object>> incentiveResults = new ObjectMapper().readValue(jsonDataString,
+				new TypeReference<List<Map<String, Object>>>() {
+				});
+
+		// Extract the required fields
+		List<Object> prescriberIds = incentiveResults.stream().map(result -> result.get("PrescriberId"))
+				.collect(Collectors.toList());
+		List<Object> prescriberNames = incentiveResults.stream().map(result -> result.get("PrescriberName"))
+				.collect(Collectors.toList());
+		List<Object> docTotalAmounts = incentiveResults.stream().map(result -> result.get("DocTotalAmount"))
+				.collect(Collectors.toList());
+		List<Object> tdsAmounts = incentiveResults.stream().map(result -> result.get("TDSAmount"))
+				.collect(Collectors.toList());
+		List<Object> netPayableAmounts = incentiveResults.stream().map(result -> result.get("NetPayableAmount"))
+				.collect(Collectors.toList());
+
+		// Return custom response with extracted fields
+		return new CustomResponse(response, statusCode, status, prescriberIds, prescriberNames, docTotalAmounts,
+				tdsAmounts, netPayableAmounts);
 	}
 
 	/**
@@ -135,24 +174,39 @@ public class ApiUtil {
 		// Get the JsonData as a String, which contains a JSON array
 		String jsonDataString = response.jsonPath().getString("Results.JsonData");
 
-		// Initialize an empty list to hold the parsed results
-		List<Map<String, Object>> results = null;
+		// Initialize variables to hold the individual field values
+		List<Object> prescriberNames = new ArrayList<>();
+		List<Object> prescriberIds = new ArrayList<>();
+		List<Object> docTotalAmounts = new ArrayList<>();
+		List<Object> tdsAmounts = new ArrayList<>();
+		List<Object> netPayableAmounts = new ArrayList<>();
 
 		// Parse the JsonData string into a List<Map<String, Object>> if it's not null
 		if (jsonDataString != null && !jsonDataString.isEmpty()) {
 			try {
 				// Using ObjectMapper to parse the JSON string into a List of Maps
 				ObjectMapper objectMapper = new ObjectMapper();
-				results = objectMapper.readValue(jsonDataString, new TypeReference<List<Map<String, Object>>>() {
-				});
+				List<Map<String, Object>> results = objectMapper.readValue(jsonDataString,
+						new TypeReference<List<Map<String, Object>>>() {
+						});
+
+				// Extract the required fields into individual lists
+				for (Map<String, Object> result : results) {
+					prescriberNames.add((String) result.get("PrescriberName"));
+					prescriberIds.add((Integer) result.get("PrescriberId"));
+					docTotalAmounts.add((Double) result.get("DocTotalAmount"));
+					tdsAmounts.add((Double) result.get("TDSAmount"));
+					netPayableAmounts.add((Double) result.get("NetPayableAmount"));
+				}
 			} catch (Exception e) {
 				// Handle parsing error
 				System.out.println("Error parsing JsonData: " + e.getMessage());
 			}
 		}
 
-		// Return a CustomResponse object
-		return new CustomResponse(response, statusCode, status, results);
+		// Return a CustomResponse object with the individual fields
+		return new CustomResponse(response, statusCode, status, prescriberNames, prescriberIds, docTotalAmounts,
+				tdsAmounts, netPayableAmounts);
 	}
 
 	/**
@@ -181,16 +235,42 @@ public class ApiUtil {
 			request.body(body);
 		}
 
+		// Send the GET request and extract the response
 		Response response = request.get(endpoint).then().extract().response();
 		System.out.println(response.prettyPrint());
 
 		// Extracting required data
 		int statusCode = response.statusCode();
 		String status = response.jsonPath().getString("Status");
+
+		// Get the Results as a list of maps
 		List<Map<String, Object>> results = response.jsonPath().getList("Results");
 
-		// Return a CustomResponse object
-		return new CustomResponse(response, statusCode, status, results);
+		// Initialize lists to hold the individual fields
+		List<Object> serviceDepartmentIds = new ArrayList<>();
+		List<Object> serviceDepartmentNames = new ArrayList<>();
+		List<Object> netSales = new ArrayList<>();
+		List<Object> referralCommissions = new ArrayList<>();
+		List<Object> grossIncomes = new ArrayList<>();
+		List<Object> otherIncentives = new ArrayList<>();
+		List<Object> hospitalNetIncomes = new ArrayList<>();
+
+		// Extract each record's fields from the results
+		if (results != null && !results.isEmpty()) {
+			for (Map<String, Object> result : results) {
+				serviceDepartmentIds.add(String.valueOf(result.get("ServiceDepartmentId")));
+				serviceDepartmentNames.add(String.valueOf(result.get("ServiceDepartmentName")));
+				netSales.add(String.valueOf(result.get("NetSales")));
+				referralCommissions.add(String.valueOf(result.get("ReferralCommission")));
+				grossIncomes.add(String.valueOf(result.get("GrossIncome")));
+				otherIncentives.add(String.valueOf(result.get("OtherIncentive")));
+				hospitalNetIncomes.add(String.valueOf(result.get("HospitalNetIncome")));
+			}
+		}
+
+		// Return a CustomResponse object with the individual fields
+		return new CustomResponse(response, statusCode, status, serviceDepartmentIds, serviceDepartmentNames, netSales,
+				referralCommissions, grossIncomes, otherIncentives, hospitalNetIncomes);
 	}
 
 	/**
@@ -225,8 +305,19 @@ public class ApiUtil {
 		String status = response.jsonPath().getString("Status");
 		Map<String, Object> results = response.jsonPath().getMap("Results");
 
-		// Return a CustomResponse object
-		return new CustomResponse(response, statusCode, status, results);
+		// Extracting the relevant fields from the "Results"
+		Object employeeIncentiveInfoId = String.valueOf(results.get("EmployeeIncentiveInfoId"));
+		Object employeeId = String.valueOf(results.get("EmployeeId"));
+		Object fullName = String.valueOf(results.get("FullName"));
+		Object tdsPercent = String.valueOf(results.get("TDSPercent"));
+		Object empTdsPercent = String.valueOf(results.get("EmpTDSPercent"));
+		Object isActive = String.valueOf(results.get("IsActive"));
+		List<Map<String, Object>> employeeBillItemsMap = (List<Map<String, Object>>) results
+				.get("EmployeeBillItemsMap");
+
+		// Return a CustomResponse object with extracted fields
+		return new CustomResponse(response, statusCode, status, employeeIncentiveInfoId, employeeId, fullName,
+				tdsPercent, empTdsPercent, isActive, employeeBillItemsMap);
 	}
 
 	/**
@@ -261,8 +352,18 @@ public class ApiUtil {
 		// Fetch results as a List of Maps (representing the fiscal years)
 		List<Map<String, Object>> results = response.jsonPath().getList("Results");
 
+		// Extract the necessary fields directly from the "Results" list
+		List<Object> fiscalYearIds = results.stream().map(result -> result.get("FiscalYearId"))
+				.collect(Collectors.toList());
+		List<Object> fiscalYearNames = results.stream().map(result -> result.get("FiscalYearName"))
+				.collect(Collectors.toList());
+		List<Object> startDates = results.stream().map(result -> result.get("StartDate")).collect(Collectors.toList());
+		List<Object> endDates = results.stream().map(result -> result.get("EndDate")).collect(Collectors.toList());
+		List<Object> isActiveList = results.stream().map(result -> result.get("IsActive")).collect(Collectors.toList());
+
 		// Return a CustomResponse object with all the necessary details
-		return new CustomResponse(response, statusCode, status, results);
+		return new CustomResponse(response, statusCode, status, fiscalYearIds, fiscalYearNames, startDates, endDates,
+				isActiveList);
 	}
 
 	/**
@@ -277,6 +378,7 @@ public class ApiUtil {
 	 *         status message, and a list of stores in the "Results" field.
 	 */
 	public CustomResponse getActInventory(String endpoint, Object body) {
+		// Set up the request
 		RequestSpecification request = RestAssured.given().header("Authorization", AuthUtil.getAuthHeader())
 				.header("Content-Type", "application/json");
 
@@ -285,15 +387,24 @@ public class ApiUtil {
 			request.body(body);
 		}
 
+		// Send the request and get the response
 		Response response = request.get(BASE_URL + endpoint).then().extract().response();
 
 		// Extracting required data
 		int statusCode = response.statusCode();
 		String status = response.jsonPath().getString("Status");
+
+		// Fetch results as a List of Maps (representing the stores)
 		List<Map<String, Object>> results = response.jsonPath().getList("Results");
 
-		// Return a CustomResponse object
-		return new CustomResponse(response, statusCode, status, results);
+		// Extract the necessary fields directly from the "Results" list
+		List<Object> storeIds = results.stream().map(result -> result.get("StoreId")).collect(Collectors.toList());
+		List<Object> names = results.stream().map(result -> result.get("Name")).collect(Collectors.toList());
+		List<Object> storeDescriptions = results.stream().map(result -> result.get("StoreDescription"))
+				.collect(Collectors.toList());
+
+		// Return a CustomResponse object with the extracted fields
+		return new CustomResponse(response, statusCode, status, storeIds, names, storeDescriptions);
 	}
 
 	/**
@@ -324,8 +435,14 @@ public class ApiUtil {
 		String status = response.jsonPath().getString("Status");
 		List<Map<String, Object>> results = response.jsonPath().getList("Results");
 
-		// Return a CustomResponse object
-		return new CustomResponse(response, statusCode, status, results);
+		// Extracting the specific fields: SubCategoryId, SubCategoryName
+		List<Object> subCategoryIds = results.stream().map(result -> result.get("SubCategoryId"))
+				.collect(Collectors.toList());
+		List<Object> subCategoryNames = results.stream().map(result -> result.get("SubCategoryName"))
+				.collect(Collectors.toList());
+
+		// Return a CustomResponse object with the extracted fields
+		return new CustomResponse(response, statusCode, status, subCategoryIds, subCategoryNames);
 	}
 
 	/**
@@ -356,8 +473,13 @@ public class ApiUtil {
 		String status = response.jsonPath().getString("Status");
 		Map<String, Object> results = response.jsonPath().getMap("Results");
 
-		// Return a CustomResponse object
-		return new CustomResponse(response, statusCode, status, results);
+		// Extract the specific fields: ItemId, AvailableQuantity, StoreId
+		Object itemId = (Integer) results.get("ItemId");
+		Object availableQuantity = (Float) results.get("AvailableQuantity");
+		Object storeId = (Integer) results.get("StoreId");
+
+		// Return a CustomResponse object with the extracted fields
+		return new CustomResponse(response, statusCode, status, itemId, availableQuantity, storeId);
 	}
 
 	/**
@@ -388,8 +510,18 @@ public class ApiUtil {
 		String status = response.jsonPath().getString("Status");
 		Map<String, Object> results = response.jsonPath().getMap("Results");
 
-		// Return a CustomResponse object
-		return new CustomResponse(response, statusCode, status, results);
+		// Extracting fields from the "Requisition" and "RequisitionItems"
+		Map<String, Object> requisition = (Map<String, Object>) results.get("Requisition");
+		Object createdByName = (String) requisition.get("CreatedByName");
+		Object requisitionNo = (Integer) requisition.get("RequisitionNo");
+		Object requisitionStatus = (String) requisition.get("RequisitionStatus");
+
+		// Extracting the requisition items
+		List<Map<String, Object>> requisitionItems = (List<Map<String, Object>>) requisition.get("RequisitionItems");
+
+		// Return a CustomResponse object with the extracted fields
+		return new CustomResponse(response, statusCode, status, requisitionNo, createdByName, requisitionStatus,
+				requisitionItems);
 	}
 
 	/**
@@ -418,12 +550,19 @@ public class ApiUtil {
 		// Extracting required data
 		int statusCode = response.statusCode();
 		String status = response.jsonPath().getString("Status");
-		
-		// Extract "Results" as a Map, since it's not a list
-	    Map<String, Object> results = response.jsonPath().getMap("Results");
 
-		// Return a CustomResponse object
-		return new CustomResponse(response, statusCode, status, results);
+		// Extract "Results" as a Map, since it's not a list
+		Map<String, Object> results = response.jsonPath().getMap("Results");
+
+		// Extract specific fields: RequisitionId, CreatedBy, Status, Dispatchers
+		Object requisitionId = (Integer) results.get("RequisitionId");
+		Object createdBy = (String) results.get("CreatedBy");
+		Object requisitionStatus = (String) results.get("Status");
+		List<Map<String, Object>> dispatchers = (List<Map<String, Object>>) results.get("Dispatchers");
+
+		// Return a CustomResponse object with the extracted fields
+		return new CustomResponse(response, statusCode, status, requisitionId, createdBy, requisitionStatus,
+				dispatchers);
 	}
 
 	/**
@@ -451,10 +590,23 @@ public class ApiUtil {
 		// Extracting required data
 		int statusCode = response.statusCode();
 		String status = response.jsonPath().getString("Status");
+
+		// Extract the "Results" field as a List of Maps (representing inventory items)
 		List<Map<String, Object>> results = response.jsonPath().getList("Results");
 
-		// Return a CustomResponse object
-		return new CustomResponse(response, statusCode, status, results);
+		// Extract the specific fields (ItemId, ItemName, AvailableQuantity)
+		List<Object> itemIds = new ArrayList<>();
+		List<Object> itemNames = new ArrayList<>();
+		List<Object> availableQuantities = new ArrayList<>();
+
+		for (Map<String, Object> item : results) {
+			itemIds.add((Integer) item.get("ItemId"));
+			itemNames.add((String) item.get("ItemName"));
+			availableQuantities.add((Float) item.get("AvailableQuantity"));
+		}
+
+		// Return a CustomResponse object with the extracted fields
+		return new CustomResponse(response, statusCode, status, itemIds, itemNames, availableQuantities);
 	}
 
 	/**
@@ -483,10 +635,13 @@ public class ApiUtil {
 		// Extracting required data
 		int statusCode = response.statusCode();
 		String status = response.jsonPath().getString("Status");
-		List<Map<String, Object>> results = response.jsonPath().getList("Results");
+
+		// Extract the list of sold medicines (ItemName and SoldQuantity)
+		List<Object> itemNames = response.jsonPath().getList("Results.ItemName");
+		List<Object> soldQuantities = response.jsonPath().getList("Results.SoldQuantity");
 
 		// Return a CustomResponse object
-		return new CustomResponse(response, statusCode, status, results);
+		return new CustomResponse(response, statusCode, status, itemNames, soldQuantities);
 	}
 
 	/**
@@ -515,10 +670,13 @@ public class ApiUtil {
 		// Extracting required data
 		int statusCode = response.statusCode();
 		String status = response.jsonPath().getString("Status");
-		List<Map<String, Object>> results = response.jsonPath().getList("Results");
+
+		// Extract the list of stores' names and dispatch values
+		List<Object> storeNames = response.jsonPath().getList("Results.Name");
+		List<Object> totalDispatchValues = response.jsonPath().getList("Results.TotalDispatchValue");
 
 		// Return a CustomResponse object
-		return new CustomResponse(response, statusCode, status, results);
+		return new CustomResponse(response, statusCode, status, storeNames, totalDispatchValues);
 	}
 
 	/**
@@ -545,10 +703,13 @@ public class ApiUtil {
 		// Extracting required data
 		int statusCode = response.statusCode();
 		String status = response.jsonPath().getString("Status");
-		List<Map<String, Object>> results = response.jsonPath().getList("Results");
+
+		// Extract the list of supplier names and ids
+		List<Object> supplierNames = response.jsonPath().getList("Results.SupplierName");
+		List<Object> supplierIds = response.jsonPath().getList("Results.SupplierId");
 
 		// Return a CustomResponse object
-		return new CustomResponse(response, statusCode, status, results);
+		return new CustomResponse(response, statusCode, status, supplierIds, supplierNames);
 	}
 
 	/**
@@ -575,10 +736,13 @@ public class ApiUtil {
 		// Extracting required data
 		int statusCode = response.statusCode();
 		String status = response.jsonPath().getString("Status");
-		List<Map<String, Object>> results = response.jsonPath().getList("Results");
 
-		// Return a CustomResponse object
-		return new CustomResponse(response, statusCode, status, results);
+		// Extract the UOMId and UOMName lists separately
+		List<Object> uomIds = response.jsonPath().getList("Results.UOMId");
+		List<Object> uomNames = response.jsonPath().getList("Results.UOMName");
+
+		// Return a CustomResponse object with UOMId and UOMName lists
+		return new CustomResponse(response, statusCode, status, uomIds, uomNames);
 	}
 
 	/**
@@ -605,9 +769,13 @@ public class ApiUtil {
 		// Extracting required data
 		int statusCode = response.statusCode();
 		String status = response.jsonPath().getString("Status");
-		List<Map<String, Object>> results = response.jsonPath().getList("Results");
 
-		// Return a CustomResponse object
-		return new CustomResponse(response, statusCode, status, results);
+		// Extract SalesCategoryId and Name as separate lists
+		List<Object> salesCategoryIds = response.jsonPath().getList("Results.SalesCategoryId");
+		List<Object> salesCategoryNames = response.jsonPath().getList("Results.Name");
+
+		// Return a CustomResponse object with SalesCategoryId and Name lists
+		return new CustomResponse(response, statusCode, status, salesCategoryIds, salesCategoryNames);
 	}
+
 }

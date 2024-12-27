@@ -16,7 +16,7 @@
     <classes>
       <class name="testcases.RestAssured_TestCases_PL1">
         <methods>
-          <include name="mostSoldMedicine"/>
+          <include name="substoreWiseDisp"/>
         </methods>
       </class> <!-- testcases.RestAssured_TestCases_PL1 -->
     </classes>

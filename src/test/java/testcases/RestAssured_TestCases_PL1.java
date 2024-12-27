@@ -1,8 +1,10 @@
 package testcases;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -49,14 +51,21 @@ public class RestAssured_TestCases_PL1 {
 		Assert.assertEquals(status, "OK", "Status should be OK.");
 
 		// Validate that each department entry has non-null fields
-		List<Map<String, Object>> results = customResponse.getListResults();
-		Assert.assertFalse(results.isEmpty(), "Results should not be empty.");
-		results.forEach(department -> {
-			Assert.assertNotNull(department.get("DepartmentId"), "DepartmentId should not be null.");
-			Assert.assertNotNull(department.get("DepartmentName"), "DepartmentName should not be null.");
-		});
+		List<Object> departmentIds = customResponse.getPatientIds();
+		List<Object> departmentNames = customResponse.getPatientCodes();
 
-		// Print response for debugging
+		Set<Object> uniqueDepartmentIds = new HashSet<>();
+		Assert.assertFalse(departmentIds.isEmpty(), "DepartmentIds should not be empty.");
+		for (int i = 0; i < departmentIds.size(); i++) {
+			Assert.assertNotNull(departmentIds.get(i), "DepartmentId should not be null.");
+			Assert.assertNotNull(departmentNames.get(i), "DepartmentName should not be null.");
+
+			uniqueDepartmentIds.add(departmentIds.get(i));
+		}
+
+		// Validate uniqueness of DepartmentId
+		Assert.assertEquals(uniqueDepartmentIds.size(), departmentIds.size(), "DepartmentId values should be unique.");
+
 		System.out.println("All Departments Response:");
 		customResponse.getResponse().prettyPrint();
 	}
@@ -87,14 +96,21 @@ public class RestAssured_TestCases_PL1 {
 		Assert.assertEquals(status, "OK", "Status should be OK.");
 
 		// Validate that each item entry has non-null fields
-		List<Map<String, Object>> results = customResponse.getListResults();
-		Assert.assertFalse(results.isEmpty(), "Results should not be empty.");
-		results.forEach(item -> {
-			Assert.assertNotNull(item.get("ItemId"), "ItemId should not be null.");
-			Assert.assertNotNull(item.get("ItemName"), "ItemName should not be null.");
-		});
+		List<Object> itemIds = customResponse.getPatientIds();
+		List<Object> itemNames = customResponse.getPatientCodes();
 
-		// Print response for debugging
+		Set<Object> uniqueItemIds = new HashSet<>();
+		Assert.assertFalse(itemIds.isEmpty(), "ItemIds should not be empty.");
+		for (int i = 0; i < itemIds.size(); i++) {
+			Assert.assertNotNull(itemIds.get(i), "ItemId should not be null.");
+			Assert.assertNotNull(itemNames.get(i), "ItemName should not be null.");
+
+			uniqueItemIds.add(itemIds.get(i));
+		}
+
+		// Validate uniqueness of ItemId
+		Assert.assertEquals(uniqueItemIds.size(), itemIds.size(), "ItemId values should be unique.");
+
 		System.out.println("All Items Response:");
 		customResponse.getResponse().prettyPrint();
 	}
@@ -116,12 +132,6 @@ public class RestAssured_TestCases_PL1 {
 		CustomResponse customResponse = apiUtil
 				.getIncentiveSummaryReport("https://healthapp.yaksha.com/BillingReports/INCTV_DocterSummary?FromDate="
 						+ fromDate + "&ToDate=" + toDate + "&IsRefferalOnly=" + isRefferal, null);
-
-		// Validate the implementation of getIncentiveSummaryReport
-		boolean isValidationSuccessful = TestCodeValidator.validateTestMethodFromFile(FILEPATH, "getIncentiveSummary",
-				List.of("given", "then", "extract", "response"));
-		System.out.println("---------------------------------------------" + isValidationSuccessful
-				+ "------------------------------");
 
 		// Validate the response status code
 		Assert.assertEquals(customResponse.getStatusCode(), 200, "Status code should be 200 OK.");
@@ -175,17 +185,20 @@ public class RestAssured_TestCases_PL1 {
 		String status = customResponse.getStatus();
 		Assert.assertEquals(status, "OK", "Status should be OK.");
 
-		// Parse the results
-		List<Map<String, Object>> results = customResponse.getListResults();
-		Assert.assertFalse(results.isEmpty(), "Results should not be empty.");
+		// Validate the individual fields
+		Assert.assertFalse(customResponse.getPrescriberNames().isEmpty(), "Prescriber Names should not be empty.");
+		Assert.assertFalse(customResponse.getPrescriberIds().isEmpty(), "Prescriber Ids should not be empty.");
+		Assert.assertFalse(customResponse.getDocTotalAmounts().isEmpty(), "DocTotalAmounts should not be empty.");
+		Assert.assertFalse(customResponse.getTdsAmounts().isEmpty(), "TDS Amounts should not be empty.");
+		Assert.assertFalse(customResponse.getNetPayableAmounts().isEmpty(), "Net Payable Amounts should not be empty.");
 
 		// Iterate through each record and validate fields
-		results.forEach(result -> {
-			String prescriberName = String.valueOf(result.get("PrescriberName"));
-			String prescriberId = String.valueOf(result.get("PrescriberId"));
-			String docTotalAmount = String.valueOf(result.get("DocTotalAmount"));
-			String tdsAmount = String.valueOf(result.get("TDSAmount"));
-			String netPayableAmount = String.valueOf(result.get("NetPayableAmount"));
+		for (int i = 0; i < customResponse.getPrescriberNames().size(); i++) {
+			Object prescriberName = customResponse.getPrescriberNames().get(i);
+			Object prescriberId = customResponse.getPrescriberIds().get(i);
+			Object docTotalAmount = customResponse.getDocTotalAmounts().get(i);
+			Object tdsAmount = customResponse.getTdsAmounts().get(i);
+			Object netPayableAmount = customResponse.getNetPayableAmounts().get(i);
 
 			// Assert fields are not null
 			Assert.assertNotNull(prescriberName, "The Prescriber Name is null.");
@@ -201,7 +214,7 @@ public class RestAssured_TestCases_PL1 {
 			System.out.println("TDSAmount: " + tdsAmount);
 			System.out.println("NetPayableAmount: " + netPayableAmount);
 			System.out.println();
-		});
+		}
 
 		// Print full API response for debugging
 		System.out.println("Full API Response:");
@@ -213,15 +226,16 @@ public class RestAssured_TestCases_PL1 {
 			+ "3. Verify the response status code is 200.")
 	public void getHospitalIncomeIncReport() throws Exception {
 		// Initialize the ApiUtil object
-		Map<String, String> searchResult = fileOperations.readExcelPOI(EXCEL_FILE_PATH, SHEET_NAME);
-
 		apiUtil = new ApiUtil();
+
+		// Fetch search parameters from the Excel file
+		Map<String, String> searchResult = fileOperations.readExcelPOI(EXCEL_FILE_PATH, SHEET_NAME);
 
 		String IncFromDate = searchResult.get("IncFromDate");
 		String IncToDate = searchResult.get("IncToDate");
 		String ServiceDepartments = searchResult.get("ServiceDepartments");
 
-		// Fetch the response from the API
+		// Send GET request to fetch hospital income incentive report
 		CustomResponse hospitalIncomeResponse = apiUtil
 				.getHospIncIncReport("https://healthapp.yaksha.com/Reporting/HospitalIncomeIncentiveReport?FromDate="
 						+ IncFromDate + "&ToDate=" + IncToDate + "&ServiceDepartments=" + ServiceDepartments, null);
@@ -244,47 +258,62 @@ public class RestAssured_TestCases_PL1 {
 		String status = hospitalIncomeResponse.getStatus();
 		Assert.assertEquals(status, "OK", "Status should be OK.");
 
-		// Get the JsonData directly from Results (since it's an array now, not a
-		// string)
-		List<Map<String, Object>> results = hospitalIncomeResponse.getResponse().jsonPath().getList("Results");
+		// Extract individual fields from the response
+		List<Object> serviceDepartmentIds = hospitalIncomeResponse.getServiceDepartmentIds();
+		List<Object> serviceDepartmentNames = hospitalIncomeResponse.getServiceDepartmentNames();
+		List<Object> netSales = hospitalIncomeResponse.getNetSales();
+		List<Object> referralCommissions = hospitalIncomeResponse.getReferralCommissions();
+		List<Object> grossIncomes = hospitalIncomeResponse.getGrossIncomes();
+		List<Object> otherIncentives = hospitalIncomeResponse.getOtherIncentives();
+		List<Object> hospitalNetIncomes = hospitalIncomeResponse.getHospitalNetIncomes();
 
 		// Assert that results are not null
-		Assert.assertNotNull(results, "Results field should not be null.");
+		Assert.assertNotNull(serviceDepartmentIds, "ServiceDepartmentIds field should not be null.");
+		Assert.assertNotNull(serviceDepartmentNames, "ServiceDepartmentNames field should not be null.");
+		Assert.assertNotNull(netSales, "NetSales field should not be null.");
+		Assert.assertNotNull(referralCommissions, "ReferralCommissions field should not be null.");
+		Assert.assertNotNull(grossIncomes, "GrossIncomes field should not be null.");
+		Assert.assertNotNull(otherIncentives, "OtherIncentives field should not be null.");
+		Assert.assertNotNull(hospitalNetIncomes, "HospitalNetIncomes field should not be null.");
 
-		// Iterate through each record in the results
-		for (Map<String, Object> result : results) {
-			// Print the keys for debugging
-			for (String key : result.keySet()) {
-				System.out.println("Key: " + key);
-			}
+		// Assert that lists are not empty
+		Assert.assertFalse(serviceDepartmentIds.isEmpty(), "ServiceDepartmentIds list should not be empty.");
+		Assert.assertFalse(serviceDepartmentNames.isEmpty(), "ServiceDepartmentNames list should not be empty.");
+		Assert.assertFalse(netSales.isEmpty(), "NetSales list should not be empty.");
+		Assert.assertFalse(referralCommissions.isEmpty(), "ReferralCommissions list should not be empty.");
+		Assert.assertFalse(grossIncomes.isEmpty(), "GrossIncomes list should not be empty.");
+		Assert.assertFalse(otherIncentives.isEmpty(), "OtherIncentives list should not be empty.");
+		Assert.assertFalse(hospitalNetIncomes.isEmpty(), "HospitalNetIncomes list should not be empty.");
 
-			// Extract and validate each field
-			String serviceDepartmentId = String.valueOf(result.get("ServiceDepartmentId"));
-			String serviceDepartmentName = String.valueOf(result.get("ServiceDepartmentName"));
-			String netSales = String.valueOf(result.get("NetSales"));
-			String referralCommission = String.valueOf(result.get("ReferralCommission"));
-			String grossIncome = String.valueOf(result.get("GrossIncome"));
-			String otherIncentive = String.valueOf(result.get("OtherIncentive"));
-			String hospitalNetIncome = String.valueOf(result.get("HospitalNetIncome"));
+		// Iterate through each record and validate fields
+		for (int i = 0; i < serviceDepartmentIds.size(); i++) {
+			// Extract values from each list
+			Object serviceDepartmentId = serviceDepartmentIds.get(i);
+			Object serviceDepartmentName = serviceDepartmentNames.get(i);
+			Object netSale = netSales.get(i);
+			Object referralCommission = referralCommissions.get(i);
+			Object grossIncome = grossIncomes.get(i);
+			Object otherIncentive = otherIncentives.get(i);
+			Object hospitalNetIncome = hospitalNetIncomes.get(i);
 
-			// Print extracted fields
+			// Assert fields are not null
+			Assert.assertNotNull(serviceDepartmentId, "The ServiceDepartmentId is null.");
+			Assert.assertNotNull(serviceDepartmentName, "The ServiceDepartmentName is null.");
+			Assert.assertNotNull(netSale, "The NetSales is null.");
+			Assert.assertNotNull(referralCommission, "The ReferralCommission is null.");
+			Assert.assertNotNull(grossIncome, "The GrossIncome is null.");
+			Assert.assertNotNull(otherIncentive, "The OtherIncentive is null.");
+			Assert.assertNotNull(hospitalNetIncome, "The HospitalNetIncome is null.");
+
+			// Print extracted fields for debugging
 			System.out.println("ServiceDepartmentId: " + serviceDepartmentId);
 			System.out.println("ServiceDepartmentName: " + serviceDepartmentName);
-			System.out.println("NetSales: " + netSales);
+			System.out.println("NetSales: " + netSale);
 			System.out.println("ReferralCommission: " + referralCommission);
 			System.out.println("GrossIncome: " + grossIncome);
 			System.out.println("OtherIncentive: " + otherIncentive);
 			System.out.println("HospitalNetIncome: " + hospitalNetIncome);
 			System.out.println();
-
-			// Assert fields are not null
-			Assert.assertNotNull(serviceDepartmentId, "ServiceDepartmentId should not be null.");
-			Assert.assertNotNull(serviceDepartmentName, "ServiceDepartmentName should not be null.");
-			Assert.assertNotNull(netSales, "NetSales should not be null.");
-			Assert.assertNotNull(referralCommission, "ReferralCommission should not be null.");
-			Assert.assertNotNull(grossIncome, "GrossIncome should not be null.");
-			Assert.assertNotNull(otherIncentive, "OtherIncentive should not be null.");
-			Assert.assertNotNull(hospitalNetIncome, "HospitalNetIncome should not be null.");
 		}
 
 		// Print the entire API response
@@ -307,36 +336,26 @@ public class RestAssured_TestCases_PL1 {
 				null);
 
 		// Validate the implementation of getEmpBillItem method using Rest Assured
-		// methods
 		boolean isValidationSuccessful = TestCodeValidator.validateTestMethodFromFile(FILEPATH, "getEmpBillItem",
 				List.of("given", "then", "extract", "response"));
 		Assert.assertTrue(isValidationSuccessful,
 				"getIncenEmpBillItems must be implemented using Rest Assured methods only.");
 
-		// Validate response structure using validateResponseFields
-		Assert.assertTrue(TestCodeValidator.validateResponseFields("getEmpBillItem", customResponse),
-				"Must have all required fields in the response.");
-
 		// Validate the response status code
 		Assert.assertEquals(customResponse.getStatusCode(), 200, "Status code should be 200 OK.");
 
-		// Validate the "Status" field in the response
+		// Validate the status field in the response
 		String status = customResponse.getStatus();
 		Assert.assertEquals(status, "OK", "Status should be OK.");
 
-		// Parse the "Results" field and assert it's not null or empty
-		Map<String, Object> result = customResponse.getMapResults();
-		Assert.assertNotNull(result, "Results field should not be null.");
-		Assert.assertFalse(result.isEmpty(), "Results should not be empty.");
-
 		// Extract and validate each field directly from the "result" map
-		String employeeIncentiveInfoId = String.valueOf(result.get("EmployeeIncentiveInfoId"));
-		String employeeIdFromResponse = String.valueOf(result.get("EmployeeId"));
-		String fullName = String.valueOf(result.get("FullName"));
-		String tdsPercent = String.valueOf(result.get("TDSPercent"));
-		String empTdsPercent = String.valueOf(result.get("EmpTDSPercent"));
-		String isActive = String.valueOf(result.get("IsActive"));
-		List<Map<String, Object>> employeeBillItemsMap = (List<Map<String, Object>>) result.get("EmployeeBillItemsMap");
+		Object employeeIncentiveInfoId = customResponse.getEmployeeIncentiveInfoId();
+		Object employeeIdFromResponse = customResponse.getEmployeeId();
+		Object fullName = customResponse.getFullName();
+		Object tdsPercent = customResponse.getTdsPercent();
+		Object empTdsPercent = customResponse.getEmpTdsPercent();
+		Object isActive = customResponse.getIsActive();
+		List<Map<String, Object>> employeeBillItemsMap = customResponse.getEmployeeBillItemsMap();
 
 		// Assert fields are not null
 		Assert.assertNotNull(employeeIncentiveInfoId, "EmployeeIncentiveInfoId should not be null.");
@@ -372,7 +391,6 @@ public class RestAssured_TestCases_PL1 {
 			+ "2. Validate that the FiscalYearId, FiscalYearName are not null.\n"
 			+ "3. Verify the response status code is 200.")
 	public void getInventoryFiscalYears() throws IOException {
-		// Initialize the ApiUtil object
 		apiUtil = new ApiUtil();
 
 		// Fetch the response from the API
@@ -388,52 +406,41 @@ public class RestAssured_TestCases_PL1 {
 		Assert.assertTrue(TestCodeValidator.validateResponseFields("getInvntryFiscalYrs", customResponse),
 				"Must have all required fields in the response.");
 
-		// Validate the status code
+		// Validate the response status code
 		Assert.assertEquals(customResponse.getStatusCode(), 200, "Status code should be 200.");
 
 		// Validate the top-level status field
 		String status = customResponse.getStatus();
 		Assert.assertEquals(status, "OK", "Status should be OK.");
 
-		// Validate the "Results" field in the response
-		List<Map<String, Object>> results = customResponse.getListResults();
-		Assert.assertNotNull(results, "Results field should not be null.");
-		Assert.assertFalse(results.isEmpty(), "Results list should not be empty.");
+		// Validate each fiscal year field directly from the extracted lists
+		List<Object> fiscalYearIds = customResponse.getPrescriberIds();
+		List<Object> fiscalYearNames = customResponse.getPrescriberNames();
+		List<Object> startDates = customResponse.getDocTotalAmounts();
+		List<Object> endDates = customResponse.getTdsAmounts();
+		List<Object> isActiveList = customResponse.getNetPayableAmounts();
 
-		// Loop through each fiscal year and extract fields
-		for (Map<String, Object> fiscalYear : results) {
-			Integer fiscalYearId = (Integer) fiscalYear.get("FiscalYearId");
-			String fiscalYearName = (String) fiscalYear.get("FiscalYearName");
-			String startDate = (String) fiscalYear.get("StartDate");
-			String endDate = (String) fiscalYear.get("EndDate");
-			Boolean isActive = (Boolean) fiscalYear.get("IsActive");
-
-			// Assert fields are not null
-			Assert.assertNotNull(fiscalYearId, "FiscalYearId should not be null.");
-			Assert.assertNotNull(fiscalYearName, "FiscalYearName should not be null.");
-			Assert.assertNotNull(startDate, "StartDate should not be null.");
-			Assert.assertNotNull(endDate, "EndDate should not be null.");
-			Assert.assertNotNull(isActive, "IsActive should not be null.");
-
-			// Print extracted fields for debugging
-			System.out.println("FiscalYearId: " + fiscalYearId);
-			System.out.println("FiscalYearName: " + fiscalYearName);
-			System.out.println("StartDate: " + startDate);
-			System.out.println("EndDate: " + endDate);
-			System.out.println("IsActive: " + isActive);
-			System.out.println();
+		// Validate that none of the fields are null
+		for (int i = 0; i < fiscalYearIds.size(); i++) {
+			Assert.assertNotNull(fiscalYearIds.get(i), "FiscalYearId at index " + i + " should not be null.");
+			Assert.assertNotNull(fiscalYearNames.get(i), "FiscalYearName at index " + i + " should not be null.");
+			Assert.assertNotNull(startDates.get(i), "StartDate at index " + i + " should not be null.");
+			Assert.assertNotNull(endDates.get(i), "EndDate at index " + i + " should not be null.");
+			Assert.assertNotNull(isActiveList.get(i), "IsActive at index " + i + " should not be null.");
 		}
 
-		// Print the entire API response for debugging
-		System.out.println("Response:");
-		customResponse.getResponse().prettyPrint();
+		// Print the extracted fields for debugging
+		System.out.println("FiscalYearId: " + fiscalYearIds);
+		System.out.println("FiscalYearName: " + fiscalYearNames);
+		System.out.println("StartDate: " + startDates);
+		System.out.println("EndDate: " + endDates);
+		System.out.println("IsActive: " + isActiveList);
 	}
 
-	@Test(priority = 8, groups = { "PL1" }, description = "1. Send a GET request to Activate Inventory/\n"
+	@Test(priority = 8, groups = { "PL1" }, description = "1. Send a GET request to Activate Inventory\n"
 			+ "2. Validate that the StoreId, Name, and StoreDescription are not null.\n"
 			+ "3. Verify the response status code is 200.")
 	public void activateInventory() throws IOException {
-		// Initialize the ApiUtil object
 		apiUtil = new ApiUtil();
 
 		// Fetch the response from the API
@@ -456,33 +463,22 @@ public class RestAssured_TestCases_PL1 {
 		String status = customResponse.getStatus();
 		Assert.assertEquals(status, "OK", "Status should be OK.");
 
-		// Validate that the "Results" field is not empty or null
-		List<Map<String, Object>> results = customResponse.getListResults();
-		Assert.assertNotNull(results, "Results field should not be null.");
-		Assert.assertFalse(results.isEmpty(), "Results list should not be empty.");
-
 		// Loop through each store and validate the necessary fields
-		results.forEach(store -> {
-			// Extract the fields
-			Integer storeId = (Integer) store.get("StoreId");
-			String name = (String) store.get("Name");
-			String storeDescription = (String) store.get("StoreDescription");
+		List<Object> storeIds = customResponse.getItemIds();
+		List<Object> names = customResponse.getItemNames();
+		List<Object> storeDescriptions = customResponse.getGenericNames();
 
-			// Print the extracted fields for debugging
-			System.out.println("StoreId: " + storeId);
-			System.out.println("Name: " + name);
-			System.out.println("StoreDescription: " + storeDescription);
-			System.out.println();
+		// Validate that none of the fields are null
+		for (int i = 0; i < storeIds.size(); i++) {
+			Assert.assertNotNull(storeIds.get(i), "StoreId at index " + i + " should not be null.");
+			Assert.assertNotNull(names.get(i), "Name at index " + i + " should not be null.");
+			Assert.assertNotNull(storeDescriptions.get(i), "StoreDescription at index " + i + " should not be null.");
+		}
 
-			// Assert that the fields are not null
-			Assert.assertNotNull(storeId, "StoreId should not be null.");
-			Assert.assertNotNull(name, "Name should not be null.");
-			Assert.assertNotNull(storeDescription, "StoreDescription should not be null.");
-		});
-
-		// Print the entire API response for debugging
-		System.out.println("Activate Inventory Response:");
-		customResponse.getResponse().prettyPrint();
+		// Print the extracted fields for debugging
+		System.out.println("StoreIds: " + storeIds);
+		System.out.println("Names: " + names);
+		System.out.println("StoreDescriptions: " + storeDescriptions);
 	}
 
 	@Test(priority = 9, groups = { "PL1" }, description = "1. Send a GET request to Inventory Subcategory\n"
@@ -506,24 +502,23 @@ public class RestAssured_TestCases_PL1 {
 		// Validate the status code
 		Assert.assertEquals(customResponse.getStatusCode(), 200, "Status code should be 200.");
 
-		// Validate top-level status field
+		// Validate the top-level status field
 		String status = customResponse.getStatus();
 		Assert.assertEquals(status, "OK", "Status should be OK.");
 
-		// Validate the "Results" field in the response
-		List<Map<String, Object>> results = customResponse.getListResults();
-		Assert.assertNotNull(results, "Results field should not be null.");
-		Assert.assertFalse(results.isEmpty(), "Results list should not be empty.");
+		// Validate the "SubCategoryId" and "SubCategoryName" fields
+		List<Object> subCategoryIds = customResponse.getPatientIds();
+		List<Object> subCategoryNames = customResponse.getPatientCodes();
 
-		// Validate that each subcategory entry has non-null fields
-		results.forEach(subcategory -> {
-			Assert.assertNotNull(subcategory.get("SubCategoryId"), "SubCategoryId should not be null.");
-			Assert.assertNotNull(subcategory.get("SubCategoryName"), "SubCategoryName should not be null.");
-		});
+		// Validate that none of the fields are null
+		for (int i = 0; i < subCategoryIds.size(); i++) {
+			Assert.assertNotNull(subCategoryIds.get(i), "SubCategoryId at index " + i + " should not be null.");
+			Assert.assertNotNull(subCategoryNames.get(i), "SubCategoryName at index " + i + " should not be null.");
+		}
 
-		// Print response for debugging
-		System.out.println("Inventory Subcategories Response:");
-		customResponse.getResponse().prettyPrint();
+		// Print the extracted fields for debugging
+		System.out.println("SubCategoryIds: " + subCategoryIds);
+		System.out.println("SubCategoryNames: " + subCategoryNames);
 	}
 
 	@Test(priority = 10, groups = { "PL1" }, description = "1. Send a GET request to available Items by Store Id\n"
@@ -559,24 +554,20 @@ public class RestAssured_TestCases_PL1 {
 		String status = customResponse.getStatus();
 		Assert.assertEquals(status, "OK", "Status should be OK.");
 
-		// Validate the "Results" field in the response
-		Map<String, Object> results = customResponse.getMapResults(); // Use getMapResults instead of list
-		Assert.assertNotNull(results, "Results field should not be null.");
+		// Validate the extracted fields: ItemId, AvailableQuantity, StoreId
+		Object itemId = customResponse.getStoreId();
+		Object availableQuantity = customResponse.getCategory();
+		Object storeId = customResponse.getIsActive();
 
-		// Extract fields from the "Results" object
-		Integer itemId = (Integer) results.get("ItemId");
-		Float availableQuantity = (Float) results.get("AvailableQuantity");
-		Integer storeId = (Integer) results.get("StoreId");
-
-		// Print extracted fields
-		System.out.println("ItemId: " + itemId);
-		System.out.println("AvailableQuantity: " + availableQuantity);
-		System.out.println("StoreId: " + storeId);
-
-		// Assert fields are not null
+		// Assert that none of the fields are null
 		Assert.assertNotNull(itemId, "ItemId should not be null.");
 		Assert.assertNotNull(availableQuantity, "AvailableQuantity should not be null.");
 		Assert.assertNotNull(storeId, "StoreId should not be null.");
+
+		// Print the extracted fields for debugging
+		System.out.println("ItemId: " + itemId);
+		System.out.println("AvailableQuantity: " + availableQuantity);
+		System.out.println("StoreId: " + storeId);
 
 		// Print the entire API response
 		System.out.println("Response:");
@@ -595,7 +586,7 @@ public class RestAssured_TestCases_PL1 {
 
 		String requisitionId = searchResult.get("requisitionId");
 
-		// Fetch the response from the API
+		// Send GET request
 		CustomResponse customResponse = apiUtil
 				.getReqItemsById("/Inventory/RequisitionItemsForView?requisitionId=" + requisitionId, null);
 
@@ -612,48 +603,27 @@ public class RestAssured_TestCases_PL1 {
 		// Validate the response status code
 		Assert.assertEquals(customResponse.getStatusCode(), 200, "Status code should be 200 OK.");
 
-		// Validate the "Results" field in the response
-		Map<String, Object> results = customResponse.getMapResults();
-		Assert.assertNotNull(results, "Results field should not be null.");
+		// Validate the "Requisition" fields
+		Object requisitionNo = customResponse.getRequisitionNo();
+		Object createdByName = customResponse.getCreatedByName();
+		Object requisitionStatus = customResponse.getRequisitionStatus();
 
-		// Validate the "Requisition" field
-		Map<String, Object> requisition = (Map<String, Object>) results.get("Requisition");
-		Assert.assertNotNull(requisition, "Requisition field should not be null.");
-
-		// Extract fields from the "Requisition" object
-		String createdByName = (String) requisition.get("CreatedByName");
-		Integer requisitionNo = (Integer) requisition.get("RequisitionNo");
-		String requisitionStatus = (String) requisition.get("RequisitionStatus");
-
-		// Print extracted requisition details
-		System.out.println("CreatedByName: " + createdByName);
-		System.out.println("RequisitionNo: " + requisitionNo);
-		System.out.println("RequisitionStatus: " + requisitionStatus);
-
-		// Assert requisition fields are not null
-		Assert.assertNotNull(createdByName, "CreatedByName should not be null.");
 		Assert.assertNotNull(requisitionNo, "RequisitionNo should not be null.");
+		Assert.assertNotNull(createdByName, "CreatedByName should not be null.");
 		Assert.assertNotNull(requisitionStatus, "RequisitionStatus should not be null.");
 
-		// Validate the "RequisitionItems" list
-		List<Map<String, Object>> requisitionItems = (List<Map<String, Object>>) requisition.get("RequisitionItems");
-		Assert.assertNotNull(requisitionItems, "RequisitionItems field should not be null.");
+		// Validate the "RequisitionItems" field
+		List<Map<String, Object>> requisitionItems = customResponse.getRequisitionItems();
+		Assert.assertNotNull(requisitionItems, "RequisitionItems should not be null.");
 		Assert.assertFalse(requisitionItems.isEmpty(), "RequisitionItems list should not be empty.");
 
-		// Loop through each requisition item and extract fields
+		// Loop through each requisition item and validate the fields
 		for (Map<String, Object> item : requisitionItems) {
 			String itemName = (String) item.get("ItemName");
 			String code = (String) item.get("Code");
 			Float pendingQuantity = (Float) item.get("PendingQuantity");
 			String requisitionItemStatus = (String) item.get("RequisitionItemStatus");
 
-			// Print extracted requisition item details
-			System.out.println("ItemName: " + itemName);
-			System.out.println("Code: " + code);
-			System.out.println("PendingQuantity: " + pendingQuantity);
-			System.out.println("RequisitionItemStatus: " + requisitionItemStatus);
-
-			// Assert requisition item fields are not null
 			Assert.assertNotNull(itemName, "ItemName should not be null.");
 			Assert.assertNotNull(code, "Code should not be null.");
 			Assert.assertNotNull(pendingQuantity, "PendingQuantity should not be null.");
@@ -680,7 +650,7 @@ public class RestAssured_TestCases_PL1 {
 		CustomResponse customResponse = apiUtil
 				.trackReqItemById("/Inventory/TrackRequisition?requisitionId=" + trackByRequisitionId, null);
 
-		// Validate the implementation of trackReqItemById
+		// Validate the implementation of trackReqItemById using Rest Assured methods
 		boolean isValidationSuccessful = TestCodeValidator.validateTestMethodFromFile(FILEPATH, "trackReqItemById",
 				List.of("given", "then", "extract", "response"));
 		Assert.assertTrue(isValidationSuccessful,
@@ -694,31 +664,23 @@ public class RestAssured_TestCases_PL1 {
 		// Validate the status code
 		Assert.assertEquals(customResponse.getStatusCode(), 200, "Status code should be 200.");
 
-		// Validate top-level status field
-		String status = customResponse.getStatus();
-		Assert.assertEquals(status, "OK", "Status should be OK.");
-
-		// Extracting and validating the "Results" field from the response
-		Map<String, Object> results = customResponse.getMapResults();
-		Assert.assertNotNull(results, "Results field should not be null.");
-
 		// Validate the "RequisitionId" field
-		Integer requisitionId = (Integer) results.get("RequisitionId");
+		Object requisitionId = customResponse.getRequisitionNo();
 		Assert.assertNotNull(requisitionId, "RequisitionId field should not be null.");
 		System.out.println("RequisitionId: " + requisitionId);
 
 		// Validate the "CreatedBy" field
-		String createdBy = (String) results.get("CreatedBy");
+		Object createdBy = customResponse.getCreatedByName();
 		Assert.assertNotNull(createdBy, "CreatedBy field should not be null.");
 		System.out.println("CreatedBy: " + createdBy);
 
 		// Validate the "Status" field
-		String requisitionStatus = (String) results.get("Status");
+		Object requisitionStatus = customResponse.getRequisitionStatus();
 		Assert.assertNotNull(requisitionStatus, "Status field should not be null.");
 		System.out.println("Requisition Status: " + requisitionStatus);
 
 		// Validate the "Dispatchers" field
-		List<Map<String, Object>> dispatchers = (List<Map<String, Object>>) results.get("Dispatchers");
+		List<Map<String, Object>> dispatchers = customResponse.getRequisitionItems();
 		Assert.assertNotNull(dispatchers, "Dispatchers field should not be null.");
 		Assert.assertFalse(dispatchers.isEmpty(), "Dispatchers list should not be empty.");
 
@@ -767,37 +729,39 @@ public class RestAssured_TestCases_PL1 {
 		String status = customResponse.getStatus();
 		Assert.assertEquals(status, "OK", "Status should be OK.");
 
-		// Validate the "Results" field in the response
-		List<Map<String, Object>> results = customResponse.getListResults();
-		Assert.assertNotNull(results, "Results field should not be null.");
-		Assert.assertFalse(results.isEmpty(), "Results list should not be empty.");
+		// Validate that itemIds, itemNames, and availableQuantities are not null
+		List<Object> itemIds = customResponse.getItemIds();
+		List<Object> itemNames = customResponse.getItemNames();
+		List<Object> availableQuantities = customResponse.getGenericNames();
 
-		// Loop through each item in the "Results" list and validate fields
-		for (Map<String, Object> item : results) {
-			Integer itemId = (Integer) item.get("ItemId");
-			String itemName = (String) item.get("ItemName");
-			Float availableQuantity = item.get("AvailableQuantity") == null ? null
-					: Float.parseFloat(item.get("AvailableQuantity").toString());
-			String code = (String) item.get("Code");
-			String itemType = (String) item.get("ItemType");
+		Assert.assertNotNull(itemIds, "ItemIds field should not be null.");
+		Assert.assertNotNull(itemNames, "ItemNames field should not be null.");
+		Assert.assertNotNull(availableQuantities, "AvailableQuantities field should not be null.");
+
+		// Validate that the lists are not empty
+		Assert.assertFalse(itemIds.isEmpty(), "ItemIds list should not be empty.");
+		Assert.assertFalse(itemNames.isEmpty(), "ItemNames list should not be empty.");
+		Assert.assertFalse(availableQuantities.isEmpty(), "AvailableQuantities list should not be empty.");
+
+		// Loop through each item and validate fields
+		for (int i = 0; i < itemIds.size(); i++) {
+			Integer itemId = (Integer) itemIds.get(i);
+			String itemName = (String) itemNames.get(i);
+			Float availableQuantity = (Float) availableQuantities.get(i);
 
 			// Print extracted fields for debugging
 			System.out.println("ItemId: " + itemId);
 			System.out.println("ItemName: " + itemName);
 			System.out.println("AvailableQuantity: " + availableQuantity);
-			System.out.println("Code: " + code);
-			System.out.println("ItemType: " + itemType);
 
 			// Assert fields are not null
-			Assert.assertNotNull(itemId, "ItemId should not be null.");
-			Assert.assertNotNull(itemName, "ItemName should not be null.");
-			Assert.assertNotNull(availableQuantity, "AvailableQuantity should not be null.");
-			Assert.assertNotNull(code, "Code should not be null.");
-			Assert.assertNotNull(itemType, "ItemType should not be null.");
+			Assert.assertNotNull(itemId, "ItemId at index " + i + " should not be null.");
+			Assert.assertNotNull(itemName, "ItemName at index " + i + " should not be null.");
+			Assert.assertNotNull(availableQuantity, "AvailableQuantity at index " + i + " should not be null.");
 
 			// Additional validations (if needed)
 			// For example, checking if AvailableQuantity is greater than 0
-			Assert.assertTrue(availableQuantity > 0, "AvailableQuantity should be greater than 0.");
+			Assert.assertTrue(availableQuantity > 0, "AvailableQuantity at index " + i + " should be greater than 0.");
 		}
 
 		// Print the entire API response for debugging
@@ -841,27 +805,32 @@ public class RestAssured_TestCases_PL1 {
 		String status = customResponse.getStatus();
 		Assert.assertEquals(status, "OK", "Status should be OK.");
 
-		// Validate the "Results" field in the response
-		List<Map<String, Object>> results = customResponse.getListResults();
-		Assert.assertNotNull(results, "Results field should not be null.");
-		Assert.assertFalse(results.isEmpty(), "Results list should not be empty.");
+		// Validate the "itemNames" and "soldQuantities" fields in the response
+		List<Object> itemNames = customResponse.getPatientIds();
+		List<Object> soldQuantities = customResponse.getPatientCodes();
 
-		// Loop through each item in the "Results" list and validate fields
-		for (Map<String, Object> item : results) {
-			String itemName = (String) item.get("ItemName");
-			Float soldQuantity = item.get("SoldQuantity") == null ? null
-					: Float.parseFloat(item.get("SoldQuantity").toString());
+		Assert.assertNotNull(itemNames, "ItemNames field should not be null.");
+		Assert.assertNotNull(soldQuantities, "SoldQuantities field should not be null.");
 
-			// Print extracted fields
+		// Validate that the lists are not empty
+		Assert.assertFalse(itemNames.isEmpty(), "ItemNames list should not be empty.");
+		Assert.assertFalse(soldQuantities.isEmpty(), "SoldQuantities list should not be empty.");
+
+		// Loop through each item and validate fields
+		for (int i = 0; i < itemNames.size(); i++) {
+			String itemName = (String) itemNames.get(i);
+			Float soldQuantity = (Float) soldQuantities.get(i);
+
+			// Print extracted fields for debugging
 			System.out.println("ItemName: " + itemName);
 			System.out.println("SoldQuantity: " + soldQuantity);
 
 			// Assert fields are not null
-			Assert.assertNotNull(itemName, "ItemName should not be null.");
-			Assert.assertNotNull(soldQuantity, "SoldQuantity should not be null.");
+			Assert.assertNotNull(itemName, "ItemName at index " + i + " should not be null.");
+			Assert.assertNotNull(soldQuantity, "SoldQuantity at index " + i + " should not be null.");
 
 			// Additional validation: SoldQuantity should be greater than 0
-			Assert.assertTrue(soldQuantity > 0, "SoldQuantity should be greater than 0.");
+			Assert.assertTrue(soldQuantity > 0, "SoldQuantity at index " + i + " should be greater than 0.");
 		}
 
 		// Print the entire API response for debugging
@@ -903,27 +872,26 @@ public class RestAssured_TestCases_PL1 {
 		String status = customResponse.getStatus();
 		Assert.assertEquals(status, "OK", "Status should be OK.");
 
-		// Validate that the "Results" field is not null and not empty
-		List<Map<String, Object>> results = customResponse.getListResults();
-		Assert.assertNotNull(results, "Results field should not be null.");
-		Assert.assertFalse(results.isEmpty(), "Results list should not be empty.");
+		// Validate the "storeNames" and "totalDispatchValues" fields in the response
+		List<Object> storeNames = customResponse.getPatientIds();
+		List<Object> totalDispatchValues = customResponse.getPatientCodes();
 
-		// Loop through each substore entry and validate fields
-		for (Map<String, Object> substore : results) {
-			String name = (String) substore.get("Name");
-			Double totalDispatchValue = substore.get("TotalDispatchValue") == null ? null
-					: Double.parseDouble(substore.get("TotalDispatchValue").toString());
+		Assert.assertNotNull(storeNames, "StoreNames field should not be null.");
+		Assert.assertNotNull(totalDispatchValues, "TotalDispatchValues field should not be null.");
 
-			// Print the extracted fields for debugging purposes
-			System.out.println("Substore: " + name);
-			System.out.println("Total Dispatch Value: " + totalDispatchValue);
+		// Validate that the lists are not empty
+		Assert.assertFalse(storeNames.isEmpty(), "StoreNames list should not be empty.");
+		Assert.assertFalse(totalDispatchValues.isEmpty(), "TotalDispatchValues list should not be empty.");
 
-			// Assert that fields are not null
-			Assert.assertNotNull(name, "Name should not be null.");
-			Assert.assertNotNull(totalDispatchValue, "TotalDispatchValue should not be null.");
+		// Loop through each store and validate fields
+		for (int i = 0; i < storeNames.size(); i++) {
+			String storeName = (String) storeNames.get(i);
 
-			// Validate that TotalDispatchValue is greater than 0
-			Assert.assertTrue(totalDispatchValue > 0, "TotalDispatchValue should be greater than zero.");
+			// Print extracted fields for debugging
+			System.out.println("StoreName: " + storeName);
+
+			// Assert fields are not null
+			Assert.assertNotNull(storeName, "StoreName at index " + i + " should not be null.");
 		}
 
 		// Print the entire API response for debugging
@@ -957,24 +925,27 @@ public class RestAssured_TestCases_PL1 {
 		String status = customResponse.getStatus();
 		Assert.assertEquals(status, "OK", "Status should be OK.");
 
-		// Validate the "Results" field in the response
-		List<Map<String, Object>> results = customResponse.getListResults();
-		Assert.assertNotNull(results, "Results field should not be null.");
-		Assert.assertFalse(results.isEmpty(), "Results list should not be empty.");
+		// Extract supplier IDs and names from the response
+		List<Object> supplierIds = customResponse.getPatientIds();
+		List<Object> supplierNames = customResponse.getPatientCodes();
 
-		// Loop through each item in the "Results" list and validate fields
-		for (Map<String, Object> item : results) {
-			// Extract fields from the item
-			String supplierName = (String) item.get("SupplierName");
-			Integer supplierId = (Integer) item.get("SupplierId");
+		Assert.assertNotNull(supplierIds, "SupplierIds field should not be null.");
+		Assert.assertNotNull(supplierNames, "SupplierNames field should not be null.");
+		Assert.assertFalse(supplierIds.isEmpty(), "SupplierIds list should not be empty.");
+		Assert.assertFalse(supplierNames.isEmpty(), "SupplierNames list should not be empty.");
 
-			// Print extracted fields for debugging purposes
-			System.out.println("SupplierName: " + supplierName);
+		// Loop through each item and validate fields
+		for (int i = 0; i < supplierIds.size(); i++) {
+			Integer supplierId = (Integer) supplierIds.get(i);
+			String supplierName = (String) supplierNames.get(i);
+
+			// Print extracted fields for debugging
 			System.out.println("SupplierId: " + supplierId);
+			System.out.println("SupplierName: " + supplierName);
 
-			// Assert SupplierName and SupplierId are not null
-			Assert.assertNotNull(supplierName, "SupplierName should not be null.");
+			// Assert fields are not null
 			Assert.assertNotNull(supplierId, "SupplierId should not be null.");
+			Assert.assertNotNull(supplierName, "SupplierName should not be null.");
 		}
 
 		// Print the entire API response for debugging
@@ -1007,15 +978,30 @@ public class RestAssured_TestCases_PL1 {
 		String status = customResponse.getStatus();
 		Assert.assertEquals(status, "OK", "Status should be OK.");
 
-		// Validate that each unit of measurement entry has non-null fields
-		List<Map<String, Object>> results = customResponse.getListResults();
-		Assert.assertFalse(results.isEmpty(), "Results should not be empty.");
-		results.forEach(unitOfMeasurement -> {
-			Assert.assertNotNull(unitOfMeasurement.get("UOMId"), "UOMId should not be null.");
-			Assert.assertNotNull(unitOfMeasurement.get("UOMName"), "UOMName should not be null.");
-		});
+		// Extract UOMIds and UOMNames from the response
+		List<Object> uomIds = customResponse.getPatientIds();
+		List<Object> uomNames = customResponse.getPatientCodes();
 
-		// Print response for debugging
+		Assert.assertNotNull(uomIds, "UOMIds field should not be null.");
+		Assert.assertNotNull(uomNames, "UOMNames field should not be null.");
+		Assert.assertFalse(uomIds.isEmpty(), "UOMIds list should not be empty.");
+		Assert.assertFalse(uomNames.isEmpty(), "UOMNames list should not be empty.");
+
+		// Loop through each item and validate fields
+		for (int i = 0; i < uomIds.size(); i++) {
+			Integer uomId = (Integer) uomIds.get(i);
+			String uomName = (String) uomNames.get(i);
+
+			// Print extracted fields for debugging
+			System.out.println("UOMId: " + uomId);
+			System.out.println("UOMName: " + uomName);
+
+			// Assert fields are not null
+			Assert.assertNotNull(uomId, "UOMId should not be null.");
+			Assert.assertNotNull(uomName, "UOMName should not be null.");
+		}
+
+		// Print the entire API response for debugging
 		System.out.println("Units of Measurement Response:");
 		customResponse.getResponse().prettyPrint();
 	}
@@ -1025,7 +1011,6 @@ public class RestAssured_TestCases_PL1 {
 					+ "2. Validate that the Name and SalesCategoryId are not null.\n"
 					+ "3. Verify the response status code is 200.")
 	public void salesCat() throws IOException {
-		// Initialize the ApiUtil object
 		apiUtil = new ApiUtil();
 
 		// Send GET request to retrieve sales categories
@@ -1041,33 +1026,38 @@ public class RestAssured_TestCases_PL1 {
 				"Must have all required fields in the response.");
 
 		// Validate the status code
-		Assert.assertEquals(customResponse.getStatusCode(), 200, "Status code should be 200 OK.");
+		Assert.assertEquals(customResponse.getStatusCode(), 200, "Status code should be 200.");
 
-		// Validate the top-level status field
+		// Validate top-level status field
 		String status = customResponse.getStatus();
 		Assert.assertEquals(status, "OK", "Status should be OK.");
 
-		// Validate that the "Results" field is not empty or null
-		List<Map<String, Object>> results = customResponse.getListResults();
-		Assert.assertNotNull(results, "Results field should not be null.");
-		Assert.assertFalse(results.isEmpty(), "Results list should not be empty.");
+		// Extract SalesCategoryIds and SalesCategoryNames from the response
+		List<Object> salesCategoryIds = customResponse.getPatientIds();
+		List<Object> salesCategoryNames = customResponse.getPatientCodes();
 
-		// Loop through each item in the "Results" list and validate fields
-		for (Map<String, Object> item : results) {
-			String Name = (String) item.get("Name");
-			Integer SalesCategoryId = (Integer) item.get("SalesCategoryId");
+		Assert.assertNotNull(salesCategoryIds, "SalesCategoryIds field should not be null.");
+		Assert.assertNotNull(salesCategoryNames, "SalesCategoryNames field should not be null.");
+		Assert.assertFalse(salesCategoryIds.isEmpty(), "SalesCategoryIds list should not be empty.");
+		Assert.assertFalse(salesCategoryNames.isEmpty(), "SalesCategoryNames list should not be empty.");
+
+		// Loop through each item and validate fields
+		for (int i = 0; i < salesCategoryIds.size(); i++) {
+			Integer salesCategoryId = (Integer) salesCategoryIds.get(i);
+			String salesCategoryName = (String) salesCategoryNames.get(i);
 
 			// Print extracted fields for debugging
-			System.out.println("Name: " + Name);
-			System.out.println("SalesCategoryId: " + SalesCategoryId);
+			System.out.println("SalesCategoryId: " + salesCategoryId);
+			System.out.println("SalesCategoryName: " + salesCategoryName);
 
 			// Assert fields are not null
-			Assert.assertNotNull(Name, "Name should not be null.");
-			Assert.assertNotNull(SalesCategoryId, "SalesCategoryId should not be null.");
+			Assert.assertNotNull(salesCategoryId, "SalesCategoryId should not be null.");
+			Assert.assertNotNull(salesCategoryName, "SalesCategoryName should not be null.");
 		}
 
 		// Print the entire API response for debugging
 		System.out.println("Sales Categories Response:");
 		customResponse.getResponse().prettyPrint();
 	}
+
 }

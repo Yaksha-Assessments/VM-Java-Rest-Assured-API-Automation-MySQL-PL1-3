@@ -5,8 +5,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,7 +49,9 @@ public class TestCodeValidator {
 					allKeywordsPresent = false;
 				}
 			}
-
+			System.out.println("===============");
+			System.out.println(allKeywordsPresent);
+			System.out.println("===============");
 			return allKeywordsPresent;
 
 		} else {
@@ -108,63 +113,52 @@ public class TestCodeValidator {
 		switch (methodName) {
 
 		case "getAllDepartments":
-			// Define expected fields for departments
-			List<String> expectedDepartmentFields = List.of("DepartmentId", "DepartmentName");
+			// Get the fields directly from the CustomResponse object
+			List<Object> departmentIds = customResponse.getPatientIds();
+			List<Object> departmentNames = customResponse.getPatientCodes();
 
-			// Extract the list of departments from the response
-			List<Map<String, Object>> departmentResults = customResponse.getResponse().jsonPath().getList("Results");
-			if (departmentResults == null || departmentResults.isEmpty()) {
-				isValid = false;
-				System.out.println("Results section is missing or empty in the response.");
-				break;
-			}
-
-			// Validate each department entry
-			for (int i = 0; i < departmentResults.size(); i++) {
-				Map<String, Object> department = departmentResults.get(i);
-				for (String field : expectedDepartmentFields) {
-					if (!department.containsKey(field)) {
-						isValid = false;
-						System.out.println("Missing field in Results[" + i + "]: " + field);
-					}
+			// Validate that DepartmentId and DepartmentName are not null
+			for (int i = 0; i < departmentIds.size(); i++) {
+				if (departmentIds.get(i) == null) {
+					isValid = false;
+					System.out.println("Missing or null field: DepartmentId at index " + i);
+				}
+				if (departmentNames.get(i) == null) {
+					isValid = false;
+					System.out.println("Missing or null field: DepartmentName at index " + i);
 				}
 			}
 
-			// Validate top-level status field
-			String departmentStatusField = customResponse.getResponse().jsonPath().getString("Status");
-			if (departmentStatusField == null || !departmentStatusField.equals("OK")) {
+			// Check for uniqueness of DepartmentId
+			Set<Object> uniqueDepartmentIds = new HashSet<>(departmentIds);
+			if (uniqueDepartmentIds.size() != departmentIds.size()) {
 				isValid = false;
-				System.out.println("Status field is missing or invalid in the response.");
+				System.out.println("DepartmentId values are not unique.");
 			}
 			break;
 
 		case "getAllItems":
-			// Define the required fields for each item in Results
-			List<String> expectedItemFields = List.of("ItemId", "ItemName");
+			// Get the fields directly from the CustomResponse object
+			List<Object> itemIds = customResponse.getPatientIds();
+			List<Object> itemNames = customResponse.getPatientCodes();
 
-			List<Map<String, Object>> itemResults = customResponse.getResponse().jsonPath().getList("Results");
-			if (itemResults == null || itemResults.isEmpty()) {
-				isValid = false;
-				System.out.println("Results section is missing or empty in the response.");
-				break;
-			}
-
-			// Validate that each item contains the required fields
-			for (int i = 0; i < itemResults.size(); i++) {
-				Map<String, Object> item = itemResults.get(i);
-				for (String field : expectedItemFields) {
-					if (!item.containsKey(field)) {
-						isValid = false;
-						System.out.println("Missing field in Results[" + i + "]: " + field);
-					}
+			// Validate that ItemId and ItemName are not null
+			for (int i = 0; i < itemIds.size(); i++) {
+				if (itemIds.get(i) == null) {
+					isValid = false;
+					System.out.println("Missing or null field: ItemId at index " + i);
+				}
+				if (itemNames.get(i) == null) {
+					isValid = false;
+					System.out.println("Missing or null field: ItemName at index " + i);
 				}
 			}
 
-			// Validate the top-level status field
-			String itemStatusField = customResponse.getResponse().jsonPath().getString("Status");
-			if (itemStatusField == null || !itemStatusField.equals("OK")) {
+			// Check for uniqueness of ItemId
+			Set<Object> uniqueItemIds = new HashSet<>(itemIds);
+			if (uniqueItemIds.size() != itemIds.size()) {
 				isValid = false;
-				System.out.println("Status field is missing or invalid in the response.");
+				System.out.println("ItemId values are not unique.");
 			}
 			break;
 
@@ -173,7 +167,7 @@ public class TestCodeValidator {
 			List<String> expectedIncentiveFields = List.of("PrescriberName", "PrescriberId", "DocTotalAmount",
 					"TDSAmount", "NetPayableAmount");
 
-			// Get the stringified JSON from the response's JsonData field
+			// Get the JsonData from the response
 			String jsonDataString = customResponse.getResponse().jsonPath().getString("Results.JsonData");
 
 			// Deserialize the stringified JSON into a List of Maps
@@ -181,13 +175,7 @@ public class TestCodeValidator {
 					new TypeReference<List<Map<String, Object>>>() {
 					});
 
-			// Iterate through the deserialized List of Maps
-			for (Map<String, Object> map : incentiveResults) {
-				for (String key : map.keySet()) {
-					System.out.println(key + ": " + map.get(key));
-				}
-			}
-
+			// Check if JsonData is null or empty
 			if (incentiveResults == null || incentiveResults.isEmpty()) {
 				isValid = false;
 				System.out.println("JsonData section is missing or empty in the response.");
@@ -215,28 +203,44 @@ public class TestCodeValidator {
 
 		case "getIncentiveReffSummary":
 			// Define expected fields for incentive referral summary
-			List<String> expectedIncentiveFieldss = List.of("PrescriberName", "PrescriberId", "DocTotalAmount",
+			List<String> expectedIncentiveFields1 = List.of("PrescriberName", "PrescriberId", "DocTotalAmount",
 					"TDSAmount", "NetPayableAmount");
 
 			// Extract the JsonData string from the response
-			String jsonDataStrings = customResponse.getResponse().jsonPath().getString("Results.JsonData");
+			String jsonDataString1 = customResponse.getResponse().jsonPath().getString("Results.JsonData");
 
 			// Check if JsonData is empty or null
-			if (jsonDataStrings == null || jsonDataStrings.isEmpty()) {
+			if (jsonDataString1 == null || jsonDataString1.isEmpty()) {
 				isValid = false;
 				System.out.println("JsonData section is missing or empty in the response.");
 				break;
 			}
 
 			// Parse the JsonData string into a List of Maps
-			List<Map<String, Object>> incentiveResultss = new ObjectMapper().readValue(jsonDataStrings,
+			List<Map<String, Object>> incentiveResults1 = new ObjectMapper().readValue(jsonDataString1,
 					new TypeReference<List<Map<String, Object>>>() {
 					});
 
+			// Initialize lists to hold individual field values
+			List<String> prescriberNames = new ArrayList<>();
+			List<Integer> prescriberIds = new ArrayList<>();
+			List<Double> docTotalAmounts = new ArrayList<>();
+			List<Double> tdsAmounts = new ArrayList<>();
+			List<Double> netPayableAmounts = new ArrayList<>();
+
 			// Validate each incentive record entry
-			for (int i = 0; i < incentiveResultss.size(); i++) {
-				Map<String, Object> incentive = incentiveResultss.get(i);
-				for (String field : expectedIncentiveFieldss) {
+			for (int i = 0; i < incentiveResults1.size(); i++) {
+				Map<String, Object> incentive = incentiveResults1.get(i);
+
+				// Add the required fields to the corresponding lists
+				prescriberNames.add((String) incentive.get("PrescriberName"));
+				prescriberIds.add((Integer) incentive.get("PrescriberId"));
+				docTotalAmounts.add((Double) incentive.get("DocTotalAmount"));
+				tdsAmounts.add((Double) incentive.get("TDSAmount"));
+				netPayableAmounts.add((Double) incentive.get("NetPayableAmount"));
+
+				// Validate that the expected fields exist in the incentive record
+				for (String field : expectedIncentiveFields1) {
 					if (!incentive.containsKey(field)) {
 						isValid = false;
 						System.out.println("Missing field in JsonData[" + i + "]: " + field);
@@ -245,39 +249,97 @@ public class TestCodeValidator {
 			}
 
 			// Validate top-level status field
-			String incentiveStatusFields = customResponse.getResponse().jsonPath().getString("Status");
-			if (incentiveStatusFields == null || !incentiveStatusFields.equals("OK")) {
+			String incentiveStatusField1 = customResponse.getResponse().jsonPath().getString("Status");
+			if (incentiveStatusField1 == null || !incentiveStatusField1.equals("OK")) {
 				isValid = false;
 				System.out.println("Status field is missing or invalid in the response.");
 			}
+
+			// If all validations passed, print out the lists
+			if (isValid) {
+				System.out.println("Prescriber Names: " + prescriberNames);
+				System.out.println("Prescriber Ids: " + prescriberIds);
+				System.out.println("DocTotal Amounts: " + docTotalAmounts);
+				System.out.println("TDS Amounts: " + tdsAmounts);
+				System.out.println("Net Payable Amounts: " + netPayableAmounts);
+			}
+
 			break;
 
 		case "getHospIncIncReport":
+			// Declare the isValid variable at the start
+			boolean isValid1 = true;
+
 			// Validate the "Status" field is present and equals "OK"
 			String status = customResponse.getStatus();
 			if (status == null || !status.equals("OK")) {
 				System.out.println("Status field is missing or invalid.");
-				isValid = false;
+				isValid1 = false;
 			}
 
 			// Validate the "Results" field is present and not empty
-			List<Map<String, Object>> results = customResponse.getListResults();
-			if (results == null || results.isEmpty()) {
-				System.out.println("Results field is missing or empty.");
-				isValid = false;
+			List<Object> serviceDepartmentIds = customResponse.getServiceDepartmentIds();
+			if (serviceDepartmentIds == null || serviceDepartmentIds.isEmpty()) {
+				System.out.println("ServiceDepartmentIds field is missing or empty.");
+				isValid1 = false;
+			}
+
+			List<Object> serviceDepartmentNames = customResponse.getServiceDepartmentNames();
+			List<Object> netSales = customResponse.getNetSales();
+			List<Object> referralCommissions = customResponse.getReferralCommissions();
+			List<Object> grossIncomes = customResponse.getGrossIncomes();
+			List<Object> otherIncentives = customResponse.getOtherIncentives();
+			List<Object> hospitalNetIncomes = customResponse.getHospitalNetIncomes();
+
+			// Validate that all fields are present and not empty for each record
+			if (serviceDepartmentNames == null || serviceDepartmentNames.isEmpty() || netSales == null
+					|| netSales.isEmpty() || referralCommissions == null || referralCommissions.isEmpty()
+					|| grossIncomes == null || grossIncomes.isEmpty() || otherIncentives == null
+					|| otherIncentives.isEmpty() || hospitalNetIncomes == null || hospitalNetIncomes.isEmpty()) {
+				isValid1 = false;
+				System.out.println("Required fields are missing or empty in the response.");
 			} else {
-				// Validate each record in the results list
-				for (Map<String, Object> result : results) {
-					// Check that each required field is not null
-					checkFieldNotNull(result, "ServiceDepartmentId");
-					checkFieldNotNull(result, "ServiceDepartmentName");
-					checkFieldNotNull(result, "NetSales");
-					checkFieldNotNull(result, "ReferralCommission");
-					checkFieldNotNull(result, "GrossIncome");
-					checkFieldNotNull(result, "OtherIncentive");
-					checkFieldNotNull(result, "HospitalNetIncome");
+				// Validate each record in the list
+				for (int i = 0; i < serviceDepartmentIds.size(); i++) {
+					// Check that each field is not null or empty for each record
+					if (serviceDepartmentIds.get(i) == null || ((String) serviceDepartmentIds.get(i)).isEmpty()) {
+						isValid1 = false;
+						System.out.println("ServiceDepartmentId is missing or empty at index " + i);
+					}
+					if (serviceDepartmentNames.get(i) == null || ((String) serviceDepartmentNames.get(i)).isEmpty()) {
+						isValid1 = false;
+						System.out.println("ServiceDepartmentName is missing or empty at index " + i);
+					}
+					if (netSales.get(i) == null || ((String) netSales.get(i)).isEmpty()) {
+						isValid1 = false;
+						System.out.println("NetSales is missing or empty at index " + i);
+					}
+					if (referralCommissions.get(i) == null || ((String) referralCommissions.get(i)).isEmpty()) {
+						isValid1 = false;
+						System.out.println("ReferralCommission is missing or empty at index " + i);
+					}
+					if (grossIncomes.get(i) == null || ((String) grossIncomes.get(i)).isEmpty()) {
+						isValid1 = false;
+						System.out.println("GrossIncome is missing or empty at index " + i);
+					}
+					if (otherIncentives.get(i) == null || ((String) otherIncentives.get(i)).isEmpty()) {
+						isValid1 = false;
+						System.out.println("OtherIncentive is missing or empty at index " + i);
+					}
+					if (hospitalNetIncomes.get(i) == null || ((String) hospitalNetIncomes.get(i)).isEmpty()) {
+						isValid1 = false;
+						System.out.println("HospitalNetIncome is missing or empty at index " + i);
+					}
 				}
 			}
+
+			// After the validation, check if all fields were valid
+			if (isValid1) {
+				System.out.println("All fields are valid.");
+			} else {
+				System.out.println("Some fields are invalid.");
+			}
+
 			break;
 
 		case "getEmpBillItem":
@@ -316,42 +378,45 @@ public class TestCodeValidator {
 			return true;
 
 		case "getInvntryFiscalYrs":
-			isValid = validateGetInvntryFiscalYrsFields(customResponse);
+			isValid1 = validateGetInvntryFiscalYrsFields(customResponse);
 			break;
 
 		case "getActInventory":
-			// Validate the "Results" field in the response
-			List<Map<String, Object>> res = customResponse.getListResults();
-			if (res != null && !res.isEmpty()) {
-				// Check each store object in the Results
-				for (Map<String, Object> store : res) {
-					// Validate that required fields are present and not null
-					if (store.containsKey("StoreId") && store.containsKey("Name")
-							&& store.containsKey("StoreDescription")) {
-						Integer storeId = (Integer) store.get("StoreId");
-						String name = (String) store.get("Name");
-						String storeDescription = (String) store.get("StoreDescription");
+			// Validate the extracted fields in the response
+			List<Object> storeIds = customResponse.getItemIds();
+			List<Object> names = customResponse.getItemNames();
+			List<Object> storeDescriptions = customResponse.getGenericNames();
 
-						// Check that StoreId, Name, and StoreDescription are not null
-						if (storeId == null || name == null || storeDescription == null) {
-							System.out.println("Validation failed for StoreId, Name, or StoreDescription being null.");
-							return false;
-						}
-					} else {
-						System.out.println("Store object is missing required fields.");
+			if (storeIds != null && !storeIds.isEmpty() && names != null && !names.isEmpty()
+					&& storeDescriptions != null && !storeDescriptions.isEmpty()) {
+				// Check each store and validate required fields
+				for (int i = 0; i < storeIds.size(); i++) {
+					Integer storeId = (Integer) storeIds.get(i);
+					String name = (String) names.get(i);
+					String storeDescription = (String) storeDescriptions.get(i);
+
+					// Check that StoreId, Name, and StoreDescription are not null
+					if (storeId == null || name == null || storeDescription == null) {
+						System.out.println("Validation failed for StoreId, Name, or StoreDescription being null.");
 						return false;
 					}
+
+					// Optionally print out for debugging
+					System.out.println("StoreId: " + storeId);
+					System.out.println("Name: " + name);
+					System.out.println("StoreDescription: " + storeDescription);
+					System.out.println();
 				}
-				// All validations passed for the Results list
-				isValid = true;
+				// All validations passed for the store list
+				isValid1 = true;
 			} else {
-				System.out.println("Results field is null or empty.");
+				System.out.println("Store details (StoreId, Name, StoreDescription) are missing or empty.");
 				return false;
 			}
 
 			// Check if Status field is present and is "OK"
-			String statuss = customResponse.getStatus();
-			if (statuss == null || !statuss.equals("OK")) {
+			String status1 = customResponse.getStatus();
+			if (status1 == null || !status1.equals("OK")) {
 				System.out.println("Status is not OK or is missing.");
 				return false;
 			}
@@ -359,103 +424,100 @@ public class TestCodeValidator {
 			break;
 
 		case "getInvSubCat":
-			// Check if the status is OK
-			String stat = customResponse.getStatus();
-			if (!"OK".equalsIgnoreCase(stat)) {
-				System.err.println("Error: Status is not OK for getInvSubCat.");
+			// Validate the "SubCategoryId" and "SubCategoryName" fields in the response
+			List<Object> subCategoryIds = customResponse.getPatientIds();
+			List<Object> subCategoryNames = customResponse.getPatientCodes();
+
+			if (subCategoryIds != null && !subCategoryIds.isEmpty() && subCategoryNames != null
+					&& !subCategoryNames.isEmpty()) {
+				// Check each subcategory and validate required fields
+				for (int i = 0; i < subCategoryIds.size(); i++) {
+					Integer subCategoryId = (Integer) subCategoryIds.get(i);
+					String subCategoryName = (String) subCategoryNames.get(i);
+
+					// Check that SubCategoryId and SubCategoryName are not null
+					if (subCategoryId == null || subCategoryName == null) {
+						System.out.println("Validation failed for SubCategoryId or SubCategoryName being null.");
+						return false;
+					}
+
+					// Optionally print out for debugging
+					System.out.println("SubCategoryId: " + subCategoryId);
+					System.out.println("SubCategoryName: " + subCategoryName);
+					System.out.println();
+				}
+				// All validations passed for the subcategories list
+				isValid1 = true;
+			} else {
+				System.out.println("SubCategoryId or SubCategoryName is missing or empty.");
 				return false;
 			}
 
-			// Check if the Results field is present and is a list
-			List<Map<String, Object>> re = customResponse.getListResults();
-			if (re == null || re.isEmpty()) {
-				System.err.println("Error: Results field is missing or empty for getInvSubCat.");
+			// Check if Status field is present and is "OK"
+			String status11 = customResponse.getStatus();
+			if (status11 == null || !status11.equals("OK")) {
+				System.out.println("Status is not OK or is missing.");
 				return false;
 			}
 
-			// Validate that each result contains "SubCategoryId" and "SubCategoryName"
-			for (Map<String, Object> subCategory : re) {
-				if (!subCategory.containsKey("SubCategoryId") || subCategory.get("SubCategoryId") == null) {
-					System.err.println("Error: Missing or null SubCategoryId in result.");
-					return false;
-				}
-				if (!subCategory.containsKey("SubCategoryName") || subCategory.get("SubCategoryName") == null) {
-					System.err.println("Error: Missing or null SubCategoryName in result.");
-					return false;
-				}
-			}
-
-			// If all validations pass, return true
-			isValid = true;
 			break;
 
 		case "availableItems":
-			// Validate the response structure for availableItems endpoint
-
-			// Validate that "Results" is not null and is a Map
-			if (customResponse.getMapResults() == null || customResponse.getMapResults().isEmpty()) {
-				System.out.println("Error: Results field is null or empty.");
-				isValid = false;
+			// Validate that "Results" is not null and is a map
+			Map<String, Object> results = customResponse.getMapResults();
+			if (results == null || results.isEmpty()) {
+				System.err.println("Error: Results field is null or empty.");
+				isValid1 = false;
 			} else {
-				Map<String, Object> r = customResponse.getMapResults();
-
 				// Validate that all expected fields are present and not null
-				if (!r.containsKey("ItemId") || r.get("ItemId") == null) {
-					System.out.println("Error: ItemId is null or missing in Results.");
-					isValid = false;
+				if (!results.containsKey("ItemId") || results.get("ItemId") == null) {
+					System.err.println("Error: ItemId is null or missing in Results.");
+					isValid1 = false;
 				}
-				if (!r.containsKey("AvailableQuantity") || r.get("AvailableQuantity") == null) {
-					System.out.println("Error: AvailableQuantity is null or missing in Results.");
-					isValid = false;
+				if (!results.containsKey("AvailableQuantity") || results.get("AvailableQuantity") == null) {
+					System.err.println("Error: AvailableQuantity is null or missing in Results.");
+					isValid1 = false;
 				}
-				if (!r.containsKey("StoreId") || r.get("StoreId") == null) {
-					System.out.println("Error: StoreId is null or missing in Results.");
-					isValid = false;
+				if (!results.containsKey("StoreId") || results.get("StoreId") == null) {
+					System.err.println("Error: StoreId is null or missing in Results.");
+					isValid1 = false;
 				}
 			}
 			break;
 
 		case "requisitionItems":
-			// Extract the "Results" field from the response
-			Map<String, Object> responseData = customResponse.getMapResults();
-			if (responseData == null) {
-				System.out.println("Results field is missing or null in the response.");
-				isValid = false;
-				break;
-			}
-
-			// Extract the "Requisition" field from the "Results" field
-			Map<String, Object> requisitionDetails = (Map<String, Object>) responseData.get("Requisition");
+			// Extract the "Requisition" field from the response
+			Map<String, Object> requisitionDetails = customResponse.getMapResults();
 			if (requisitionDetails == null) {
 				System.out.println("Requisition field is missing or null.");
-				isValid = false;
+				isValid1 = false;
 				break;
 			}
 
-			// Validate "Requisition" field details
+			// Validate the "Requisition" field details
 			String createdByName = (String) requisitionDetails.get("CreatedByName");
 			Integer requisitionNo = (Integer) requisitionDetails.get("RequisitionNo");
 			String requisitionStatus = (String) requisitionDetails.get("RequisitionStatus");
 
 			if (createdByName == null) {
 				System.out.println("CreatedByName is missing or null.");
-				isValid = false;
+				isValid1 = false;
 			}
 			if (requisitionNo == null) {
 				System.out.println("RequisitionNo is missing or null.");
-				isValid = false;
+				isValid1 = false;
 			}
 			if (requisitionStatus == null) {
 				System.out.println("RequisitionStatus is missing or null.");
-				isValid = false;
+				isValid1 = false;
 			}
 
-			// Extract the "RequisitionItems" list from the "Requisition" field
+			// Extract and validate the "RequisitionItems" list
 			List<Map<String, Object>> requisitionItemsList = (List<Map<String, Object>>) requisitionDetails
 					.get("RequisitionItems");
 			if (requisitionItemsList == null || requisitionItemsList.isEmpty()) {
 				System.out.println("RequisitionItems list is missing or empty.");
-				isValid = false;
+				isValid1 = false;
 			} else {
 				// Validate each item in the "RequisitionItems" list
 				for (Map<String, Object> requisitionItem : requisitionItemsList) {
@@ -466,83 +528,83 @@ public class TestCodeValidator {
 
 					if (itemName == null) {
 						System.out.println("ItemName is missing or null in requisition item.");
-						isValid = false;
+						isValid1 = false;
 					}
 					if (itemCode == null) {
 						System.out.println("Code is missing or null in requisition item.");
-						isValid = false;
+						isValid1 = false;
 					}
 					if (pendingQuantity == null) {
 						System.out.println("PendingQuantity is missing or null in requisition item.");
-						isValid = false;
+						isValid1 = false;
 					}
 					if (itemStatus == null) {
 						System.out.println("RequisitionItemStatus is missing or null in requisition item.");
-						isValid = false;
+						isValid1 = false;
 					}
 				}
 			}
 			break;
 
 		case "verifyRequisitionAndDispatchFields":
-			// Extract the "Results" field from the response
+			// Extract the "Requisition" field from the response
 			Map<String, Object> responseResults = customResponse.getMapResults();
 			if (responseResults == null) {
 				System.out.println("Error: 'Results' field is null.");
-				isValid = false;
+				isValid1 = false;
+				break;
+			}
+
+			// Validate RequisitionId
+			Integer requisitionId = (Integer) responseResults.get("RequisitionId");
+			if (requisitionId == null) {
+				System.out.println("Error: 'RequisitionId' is null.");
+				isValid1 = false;
 			} else {
-				// Validate RequisitionId
-				Integer requisitionId = (Integer) responseResults.get("RequisitionId");
-				if (requisitionId == null) {
-					System.out.println("Error: 'RequisitionId' is null.");
-					isValid = false;
-				} else {
-					System.out.println("RequisitionId: " + requisitionId);
-				}
+				System.out.println("RequisitionId: " + requisitionId);
+			}
 
-				// Validate CreatedBy
-				String createdBy = (String) responseResults.get("CreatedBy");
-				if (createdBy == null || createdBy.isEmpty()) {
-					System.out.println("Error: 'CreatedBy' is null or empty.");
-					isValid = false;
-				} else {
-					System.out.println("CreatedBy: " + createdBy);
-				}
+			// Validate CreatedBy
+			String createdBy = (String) responseResults.get("CreatedBy");
+			if (createdBy == null || createdBy.isEmpty()) {
+				System.out.println("Error: 'CreatedBy' is null or empty.");
+				isValid1 = false;
+			} else {
+				System.out.println("CreatedBy: " + createdBy);
+			}
 
-				// Validate Status
-				String reqStat = (String) responseResults.get("Status");
-				if (reqStat == null || reqStat.isEmpty()) {
-					System.out.println("Error: 'Status' is null or empty.");
-					isValid = false;
-				} else {
-					System.out.println("Requisition Status: " + reqStat);
-				}
+			// Validate Status
+			String reqStat = (String) responseResults.get("Status");
+			if (reqStat == null || reqStat.isEmpty()) {
+				System.out.println("Error: 'Status' is null or empty.");
+				isValid1 = false;
+			} else {
+				System.out.println("Requisition Status: " + reqStat);
+			}
 
-				// Validate Dispatchers array
-				List<Map<String, Object>> dispatchersList = (List<Map<String, Object>>) responseResults
-						.get("Dispatchers");
-				if (dispatchersList == null || dispatchersList.isEmpty()) {
-					System.out.println("Error: 'Dispatchers' list is null or empty.");
-					isValid = false;
-				} else {
-					for (Map<String, Object> dispatcher : dispatchersList) {
-						// Validate DispatchId
-						Integer dispatchId = (Integer) dispatcher.get("DispatchId");
-						if (dispatchId == null) {
-							System.out.println("Error: 'DispatchId' is null.");
-							isValid = false;
-						} else {
-							System.out.println("DispatchId: " + dispatchId);
-						}
+			// Validate Dispatchers array
+			List<Map<String, Object>> dispatchersList = (List<Map<String, Object>>) responseResults.get("Dispatchers");
+			if (dispatchersList == null || dispatchersList.isEmpty()) {
+				System.out.println("Error: 'Dispatchers' list is null or empty.");
+				isValid1 = false;
+			} else {
+				for (Map<String, Object> dispatcher : dispatchersList) {
+					// Validate DispatchId
+					Integer dispatchId = (Integer) dispatcher.get("DispatchId");
+					if (dispatchId == null) {
+						System.out.println("Error: 'DispatchId' is null.");
+						isValid1 = false;
+					} else {
+						System.out.println("DispatchId: " + dispatchId);
+					}
 
-						// Validate Name
-						String dispatcherName = (String) dispatcher.get("Name");
-						if (dispatcherName == null || dispatcherName.isEmpty()) {
-							System.out.println("Error: 'Name' is null or empty.");
-							isValid = false;
-						} else {
-							System.out.println("Dispatcher Name: " + dispatcherName);
-						}
+					// Validate Name
+					String dispatcherName = (String) dispatcher.get("Name");
+					if (dispatcherName == null || dispatcherName.isEmpty()) {
+						System.out.println("Error: 'Name' is null or empty.");
+						isValid1 = false;
+					} else {
+						System.out.println("Dispatcher Name: " + dispatcherName);
 					}
 				}
 			}
@@ -550,44 +612,36 @@ public class TestCodeValidator {
 
 		case "getInvItem":
 			// Validate the "Results" field structure in the response
-			List<Map<String, Object>> itemList = customResponse.getListResults();
-			if (itemList == null || itemList.isEmpty()) {
-				System.out.println("Results field is missing or empty.");
-				isValid = false;
+			List<Object> itemIds1 = customResponse.getItemIds();
+			List<Object> itemNames1 = customResponse.getItemNames();
+			List<Object> availableQuantities = customResponse.getGenericNames();
+
+			if (itemIds1 == null || itemIds1.isEmpty()) {
+				System.out.println("Error: ItemIds are missing or empty.");
+				isValid1 = false;
 			}
 
 			// Loop through each inventory item and validate required fields
-			for (Map<String, Object> inventoryItem : itemList) {
-				Integer inventoryId = (Integer) inventoryItem.get("ItemId");
-				String inventoryName = (String) inventoryItem.get("ItemName");
-				Float availableStock = inventoryItem.get("AvailableQuantity") == null ? null
-						: Float.parseFloat(inventoryItem.get("AvailableQuantity").toString());
-				String stockCode = (String) inventoryItem.get("Code");
-				String itemCategory = (String) inventoryItem.get("ItemType");
+			for (int i = 0; i < itemIds1.size(); i++) {
+				Integer inventoryId = (Integer) itemIds1.get(i);
+				String inventoryName = (String) itemNames1.get(i);
+				Float availableStock = (Float) availableQuantities.get(i);
 
 				// Validate each required field
 				if (inventoryId == null) {
 					System.out.println("ItemId is missing or null.");
-					isValid = false;
+					isValid1 = false;
 				}
 				if (inventoryName == null || inventoryName.isEmpty()) {
 					System.out.println("ItemName is missing or empty.");
-					isValid = false;
+					isValid1 = false;
 				}
 				if (availableStock == null) {
 					System.out.println("AvailableQuantity is missing or null.");
-					isValid = false;
+					isValid1 = false;
 				} else if (availableStock <= 0) {
 					System.out.println("AvailableQuantity should be greater than zero.");
-					isValid = false;
-				}
-				if (stockCode == null || stockCode.isEmpty()) {
-					System.out.println("Code is missing or empty.");
-					isValid = false;
-				}
-				if (itemCategory == null || itemCategory.isEmpty()) {
-					System.out.println("ItemType is missing or empty.");
-					isValid = false;
+					isValid1 = false;
 				}
 
 				// Print values for debugging purposes
@@ -597,62 +651,78 @@ public class TestCodeValidator {
 			break;
 
 		case "getMostSoldMed":
-			// Validate the "Results" field structure in the response
-			List<Map<String, Object>> soldMedicineList = customResponse.getListResults();
-			if (soldMedicineList == null || soldMedicineList.isEmpty()) {
-				System.out.println("Results field is missing or empty.");
-				isValid = false;
+			// Validate the "itemNames" and "soldQuantities" fields
+			List<Object> itemNames11 = customResponse.getPatientIds();
+			List<Object> soldQuantities = customResponse.getPatientCodes();
+
+			// Ensure "itemNames" and "soldQuantities" are not null or empty
+			if (itemNames11 == null || itemNames11.isEmpty()) {
+				System.out.println("Error: ItemNames field is missing or empty.");
+				isValid1 = false;
 			}
 
-			// Loop through each sold medicine item and validate required fields
-			for (Map<String, Object> medicineItem : soldMedicineList) {
-				String medicineName = (String) medicineItem.get("ItemName");
-				Float quantitySold = medicineItem.get("SoldQuantity") == null ? null
-						: Float.parseFloat(medicineItem.get("SoldQuantity").toString());
+			if (soldQuantities == null || soldQuantities.isEmpty()) {
+				System.out.println("Error: SoldQuantities field is missing or empty.");
+				isValid1 = false;
+			}
+
+			// Validate each item and quantity
+			for (int i = 0; i < itemNames11.size(); i++) {
+				String itemName = (String) itemNames11.get(i);
+				Float soldQuantity = (Float) soldQuantities.get(i);
 
 				// Validate each required field
-				if (medicineName == null || medicineName.isEmpty()) {
-					System.out.println("ItemName is missing or empty.");
-					isValid = false;
+				if (itemName == null || itemName.isEmpty()) {
+					System.out.println("Error: ItemName is missing or empty.");
+					isValid1 = false;
 				}
-				if (quantitySold == null) {
-					System.out.println("SoldQuantity is missing or null.");
-					isValid = false;
-				} else if (quantitySold <= 0) {
-					System.out.println("SoldQuantity should be greater than zero.");
-					isValid = false;
+
+				if (soldQuantity == null) {
+					System.out.println("Error: SoldQuantity is missing or null.");
+					isValid1 = false;
+				} else if (soldQuantity <= 0) {
+					System.out.println("Error: SoldQuantity should be greater than zero.");
+					isValid1 = false;
 				}
 
 				// Print values for debugging purposes
-				System.out.println("Validated Medicine: " + medicineName + " [SoldQuantity: " + quantitySold + "]");
+				System.out.println("Validated Medicine: " + itemName + " [SoldQuantity: " + soldQuantity + "]");
 			}
 			break;
 
 		case "getSubDisp":
-			// Validate the "Results" field structure in the response
-			List<Map<String, Object>> locationList = customResponse.getListResults();
-			if (locationList == null || locationList.isEmpty()) {
-				System.out.println("Results field is missing or empty.");
-				isValid = false;
+			// Validate the "storeNames" and "totalDispatchValues" fields in the response
+			List<Object> storeNames = customResponse.getPatientIds();
+			List<Object> totalDispatchValues = customResponse.getPatientCodes();
+
+			// Ensure "storeNames" and "totalDispatchValues" are not null or empty
+			if (storeNames == null || storeNames.isEmpty()) {
+				System.out.println("Error: StoreNames field is missing or empty.");
+				isValid1 = false;
 			}
 
-			// Loop through each location entry and validate required fields
-			for (Map<String, Object> location : locationList) {
-				String storeName = (String) location.get("Name");
-				Double dispatchValue = location.get("TotalDispatchValue") == null ? null
-						: Double.parseDouble(location.get("TotalDispatchValue").toString());
+			if (totalDispatchValues == null || totalDispatchValues.isEmpty()) {
+				System.out.println("Error: TotalDispatchValues field is missing or empty.");
+				isValid1 = false;
+			}
+
+			// Validate each store and dispatch value
+			for (int i = 0; i < storeNames.size(); i++) {
+				String storeName = (String) storeNames.get(i);
+				Float dispatchValue = (Float) totalDispatchValues.get(i);
 
 				// Validate each required field
 				if (storeName == null || storeName.isEmpty()) {
-					System.out.println("Store Name is missing or empty.");
-					isValid = false;
+					System.out.println("Error: StoreName is missing or empty.");
+					isValid1 = false;
 				}
+
 				if (dispatchValue == null) {
-					System.out.println("TotalDispatchValue is missing or null.");
-					isValid = false;
+					System.out.println("Error: TotalDispatchValue is missing or null.");
+					isValid1 = false;
 				} else if (dispatchValue <= 0) {
-					System.out.println("TotalDispatchValue should be greater than zero.");
-					isValid = false;
+					System.out.println("Error: TotalDispatchValue should be greater than zero.");
+					isValid1 = false;
 				}
 
 				// Print values for debugging purposes
@@ -662,123 +732,132 @@ public class TestCodeValidator {
 
 		case "getActSupp":
 			// Extracting the results list from the response
-			List<Map<String, Object>> supplierList = customResponse.getListResults();
+			List<Object> supplierIds = customResponse.getPatientIds();
+			List<Object> supplierNames = customResponse.getPatientCodes();
 
-			if (supplierList == null || supplierList.isEmpty()) {
-				System.out.println("Results field is missing or empty.");
-				isValid = false;
+			if (supplierIds == null || supplierIds.isEmpty()) {
+				System.out.println("Error: SupplierIds field is missing or empty.");
+				isValid1 = false;
 			}
 
-			// Looping through each supplier and validating required fields
-			for (Map<String, Object> supplierDetails : supplierList) {
-				Integer supplierIdentification = (Integer) supplierDetails.get("SupplierId");
-				String supplierFullName = (String) supplierDetails.get("SupplierName");
+			if (supplierNames == null || supplierNames.isEmpty()) {
+				System.out.println("Error: SupplierNames field is missing or empty.");
+				isValid1 = false;
+			}
+
+			// Loop through each supplier and validate required fields
+			for (int i = 0; i < supplierIds.size(); i++) {
+				Integer supplierId = (Integer) supplierIds.get(i);
+				String supplierName = (String) supplierNames.get(i);
 
 				// Validate SupplierId
-				if (supplierIdentification == null) {
+				if (supplierId == null) {
 					System.out.println("SupplierId is missing or null.");
-					isValid = false;
+					isValid1 = false;
 				}
 
 				// Validate SupplierName
-				if (supplierFullName == null || supplierFullName.isEmpty()) {
+				if (supplierName == null || supplierName.isEmpty()) {
 					System.out.println("SupplierName is missing or empty.");
-					isValid = false;
+					isValid1 = false;
 				}
 
 				// Print values for debugging
-				System.out.println(
-						"Validated Supplier: " + supplierFullName + " [SupplierId: " + supplierIdentification + "]");
+				System.out.println("Validated Supplier: " + supplierName + " [SupplierId: " + supplierId + "]");
 			}
 			break;
 
 		case "getMeasureUnits":
-			// Validate response for getMeasureUnits API
+			// Extracting the lists of UOMIds and UOMNames from the response
+			List<Object> uomIds = customResponse.getPatientIds();
+			List<Object> uomNames = customResponse.getPatientCodes();
 
-			// Validate the presence of the 'Status' field and its value
-			String statusField = customResponse.getStatus();
-			if (statusField == null || !statusField.equals("OK")) {
-				System.out.println("Error: 'Status' field is either null or not OK.");
-				return false;
+			// Validate UOMIds and UOMNames lists
+			if (uomIds == null || uomIds.isEmpty()) {
+				System.out.println("Error: UOMIds field is missing or empty.");
+				isValid1 = false;
 			}
 
-			// Validate that 'Results' is a list and it's not empty
-			List<Map<String, Object>> resultList = customResponse.getListResults();
-			if (resultList == null || resultList.isEmpty()) {
-				System.out.println("Error: 'Results' field is either null or empty.");
-				return false;
+			if (uomNames == null || uomNames.isEmpty()) {
+				System.out.println("Error: UOMNames field is missing or empty.");
+				isValid1 = false;
 			}
 
-			// Validate the 'UOMId' and 'UOMName' for each entry in 'Results'
-			for (Map<String, Object> unitOfMeasurement : resultList) {
-				// Validate 'UOMId' field
-				if (!unitOfMeasurement.containsKey("UOMId") || unitOfMeasurement.get("UOMId") == null) {
-					System.out.println("Error: 'UOMId' is missing or null for a unit of measurement.");
-					return false;
-				}
-				if (!(unitOfMeasurement.get("UOMId") instanceof Integer)) {
-					System.out.println("Error: 'UOMId' is not an integer for a unit of measurement.");
-					return false;
+			// Loop through each UOM and validate required fields
+			for (int i = 0; i < uomIds.size(); i++) {
+				Integer uomId = (Integer) uomIds.get(i);
+				String uomName = (String) uomNames.get(i);
+
+				// Validate UOMId
+				if (uomId == null) {
+					System.out.println("Error: UOMId is missing or null.");
+					isValid1 = false;
 				}
 
-				// Validate 'UOMName' field
-				if (!unitOfMeasurement.containsKey("UOMName") || unitOfMeasurement.get("UOMName") == null) {
-					System.out.println("Error: 'UOMName' is missing or null for a unit of measurement.");
-					return false;
+				// Validate UOMName
+				if (uomName == null || uomName.isEmpty()) {
+					System.out.println("Error: UOMName is missing or empty.");
+					isValid1 = false;
 				}
-				if (!(unitOfMeasurement.get("UOMName") instanceof String)) {
-					System.out.println("Error: 'UOMName' is not a string for a unit of measurement.");
-					return false;
-				}
+
+				// Print values for debugging purposes
+				System.out.println("Validated UOM: " + uomName + " [UOMId: " + uomId + "]");
 			}
-
-			// If all validations pass, return true
-			return true;
+			break;
 
 		case "getSalesCat":
-			// Validate that the "Status" field is present and has a value of "OK"
-			String statu = customResponse.getStatus();
-			if (statu == null || !statu.equals("OK")) {
-				System.err.println("Status should be 'OK', but found: " + statu);
-				return false;
+			// Extract SalesCategoryId and SalesCategoryName from the response
+			List<Object> salesCategoryIds = customResponse.getPatientIds();
+			List<Object> salesCategoryNames = customResponse.getPatientCodes();
+
+			// Validate SalesCategoryId and SalesCategoryName lists
+			if (salesCategoryIds == null || salesCategoryIds.isEmpty()) {
+				System.out.println("Error: SalesCategoryIds field is missing or empty.");
+				isValid1 = false;
 			}
 
-			// Validate that the response code is 200
-			if (customResponse.getStatusCode() != 200) {
-				System.err.println("Expected status code 200, but found: " + customResponse.getStatusCode());
-				return false;
+			if (salesCategoryNames == null || salesCategoryNames.isEmpty()) {
+				System.out.println("Error: SalesCategoryNames field is missing or empty.");
+				isValid1 = false;
 			}
 
-			// Validate that the "Results" field is not null and not empty
-			List<Map<String, Object>> r = customResponse.getListResults();
-			if (r == null || r.isEmpty()) {
-				System.err.println("Results field should not be null or empty.");
-				return false;
-			}
+			// Loop through each SalesCategoryId and SalesCategoryName and validate required
+			// fields
+			for (int i = 0; i < salesCategoryIds.size(); i++) {
+				Integer salesCategoryId = (Integer) salesCategoryIds.get(i);
+				String salesCategoryName = (String) salesCategoryNames.get(i);
 
-			// Validate that each item in the results list has the necessary fields
-			for (Map<String, Object> resultItem : r) {
-				String categoryName = (String) resultItem.get("Name");
-				Integer categoryId = (Integer) resultItem.get("SalesCategoryId");
-
-				if (categoryName == null) {
-					System.err.println("Name should not be null in one of the results.");
-					return false;
+				// Validate SalesCategoryId
+				if (salesCategoryId == null) {
+					System.out.println("Error: SalesCategoryId is missing or null.");
+					isValid1 = false;
 				}
 
-				if (categoryId == null) {
-					System.err.println("SalesCategoryId should not be null in one of the results.");
-					return false;
+				// Validate SalesCategoryName
+				if (salesCategoryName == null || salesCategoryName.isEmpty()) {
+					System.out.println("Error: SalesCategoryName is missing or empty.");
+					isValid1 = false;
 				}
+
+				// Print values for debugging purposes
+				System.out.println("Validated Sales Category: " + salesCategoryName + " [SalesCategoryId: "
+						+ salesCategoryId + "]");
 			}
-			// All validations passed
-			return true;
+			break;
 
 		default:
 			System.out.println("Method " + methodName + " is not recognized for validation.");
-			isValid = false;
+			isValid1 = false;
 		}
 		return isValid;
+	}
+
+	private void checkFieldNotNull(List<String> list, int index, String fieldName, boolean[] isValid) {
+		if (list == null || list.size() <= index || list.get(index) == null) {
+			isValid[0] = false; // Modify isValid by passing it as an array (because primitives are passed by
+								// value)
+			System.out.println(fieldName + " is missing or null at index " + index);
+		}
 	}
 
 	// Helper method to check that a field is not null
@@ -808,7 +887,7 @@ public class TestCodeValidator {
 		// Validate the "Results" field in the response
 		List<Map<String, Object>> results = customResponse.getListResults();
 		if (results == null || results.isEmpty()) {
-			return false;
+			return false; // Results field is either null or empty
 		}
 
 		// Loop through each fiscal year and validate required fields
@@ -818,7 +897,7 @@ public class TestCodeValidator {
 			if (fiscalYear.get("FiscalYearId") == null || fiscalYear.get("FiscalYearName") == null
 					|| fiscalYear.get("StartDate") == null || fiscalYear.get("EndDate") == null
 					|| fiscalYear.get("IsActive") == null) {
-				return false;
+				return false; // Any of the fields are null, validation fails
 			}
 		}
 
